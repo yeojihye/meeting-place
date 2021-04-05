@@ -229,6 +229,8 @@
       var tmp_road_address = [];   // 사용자 출발 위치 확정 전 선택된 place 객체의 도로명주소 저장 리스트
       var user_place_name = [];   // 사용자 출발 위치의 장소 이름 저장 리스트
       var tmp_place_name = [];    // 사용자 출발 위치 확정 전 선택된 place 객체의 장소 이름 저장 리스트
+      var tmp_coords = [];     // 사용자 출발 위치 확정 전 선택된 place 객체의 위도 경도 값
+      var user_coords = [];    // 사용자 출발 위치의 위도 경도 값
       var storage = window.sessionStorage; // 세션 스토리지
 
       // 마커 생성
@@ -438,6 +440,8 @@
                   displayInfowindow(marker, title);    // 선택한 마커만 표시
                   tmp_road_address.push(itemEl.road_address_name);    // 임시 저장 리스트에 선택한 장소의 도로명주소 저장
                   tmp_place_name.push(itemEl.place_name);    // 임시 저장 리스트에 선택한 장소의 장소명 저장
+                  tmp_coords.push(itemEl.y);
+                  tmp_coords.push(itemEl.x);
 
                   // 클릭된 마커를 현재 클릭된 마커 객체로 설정합니다
                   selectedMarker = marker;
@@ -474,6 +478,8 @@
           '   <h5>' + places.place_name + '</h5>';
 
         el.place_name = places.place_name;
+        el.x = places.x;
+        el.y = places.y;
 
         if (places.road_address_name) {
           itemStr += '    <span>' + places.road_address_name + '</span>' +
@@ -558,11 +564,12 @@
         user_num++;    // 사용자 인원 추가
         user_road_address.push(tmp_road_address[tmp_road_address.length - 1]);    // 사용자 최종 출발위치 도로명주소 저장
         user_place_name.push(tmp_place_name[tmp_place_name.length - 1]);    // 사용자 최종 출발위치 장소명 저장
-        storage.setItem(user_num, tmp_road_address[tmp_road_address.length - 1]);
+        storage.setItem(user_num, JSON.stringify([tmp_coords[tmp_coords.length - 2], tmp_coords[tmp_coords.length - 1]]));
 
         // 임시 리스트 초기화
         tmp_road_address = [];
         tmp_place_name = [];
+        tmp_coords = [];
 
         var div = document.createElement('div');
 
