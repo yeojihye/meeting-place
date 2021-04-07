@@ -202,7 +202,11 @@
   <div class="map_wrap">
     <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
-      <ul id="subwayList"></ul>
+      <div>
+        <a href="javascript:toggle();">주변 지하철역 중심으로 보기</a>
+        <hr>
+        <ul id="subwayList" style="display:none;"></ul>
+      </div>
       <div class="option">
         <div>
           <span id="centerAddr"></span>
@@ -235,7 +239,7 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=75a43ad0e555d3dc1b20edcfbae4f7aa&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
   <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
       mapOption = {
@@ -354,6 +358,54 @@
       runAjax();
     }
 
+    // toggle
+    function toggle() {
+      var con = document.getElementById("subwayList");
+      if (con.style.display == 'none') {
+        con.style.display = 'block';
+        markSubway();
+      } else {
+        con.style.display = 'none';
+        backToMid();
+      }
+    }
+
+    // 거리상 중간지점으로 돌아가기
+    function backToMid() {
+      subX = [];
+      subT = [];
+      location.reload(true);
+      location.href = location.href;
+
+      history.go(0);
+    }
+
+    // 근처 지하철역 마다 마커 표시
+    function markSubway() {
+      console.log(subX);
+
+      var imageSrc = 'https://ifh.cc/g/1R5ZJ7.png', // 마커이미지의 주소입니다    
+        imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
+        imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+      for (var i = 0; i < subX.length; i++) {
+        // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+          markerPosition = new kakao.maps.LatLng(subY[i], subX[i]); // 마커가 표시될 위치입니다
+
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+          position: markerPosition,
+          image: markerImage // 마커이미지 설정 
+        });
+
+        // 마커가 지도 위에 표시되도록 설정합니다
+        marker.setMap(map);
+      }
+
+    }
+
+
     function showPlacelist(y, x) {
       // 중심좌표 변수
       mid_point = new kakao.maps.LatLng(y, x);
@@ -375,8 +427,8 @@
         method: "GET",
         url: "https://dapi.kakao.com/v2/local/search/category",
         // 테스트: 서현역 (37.38456795311141, 127.12433099730022)
-        data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 2000 },
-        headers: { Authorization: "KakaoAK 5ab558569b4444248d69a403f56a7a6b" }
+        data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 5000 },
+        headers: { Authorization: "KakaoAK 0f0928687476565dc31f0983785f7e31" } //REST API 키
       })
         .done(function (msg) {
           for (var i = 0; i < 5; i++) {
@@ -671,9 +723,8 @@
         itemStr += '    <span>' + places.address_name + '</span>';
       }
 
-      itemStr += '  <span class="tel">' + places.phone + '</span>' +
-        '</div>';
-
+      itemStr += '  <span class="tel">' + places.phone +
+        ' <a href="' + places.place_url + '" target="_blank" style="text-decoration:underline;color:blue;">상세</a>' + '</span></div>';
       el.innerHTML = itemStr;
       el.className = 'item';
 
@@ -699,6 +750,7 @@
 
       return marker;
     }
+
   </script>
 </body>
 
