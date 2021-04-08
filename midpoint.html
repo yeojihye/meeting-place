@@ -31,7 +31,7 @@
       top: 0;
       left: 0;
       bottom: 0;
-      width: 250px;
+      width: 350px;
       margin: 10px 0 30px 10px;
       padding: 5px;
       overflow-y: auto;
@@ -200,10 +200,11 @@
 <body onload="search_mid();">
 
   <div class="map_wrap">
-    <div id="map" style="width:100%;height:100%;position:relative;overflow:hidden;"></div>
+    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
       <div>
-        <a href="javascript:toggle();">주변 지하철역 중심으로 보기</a>
+        <a href="javascript:toggle();">주변 지하철역 중심으로 보기</a> |
+        <a href="javascript:wide_view();">전체 출발위치 포함해서 보기</a>
         <hr>
         <ul id="subwayList" style="display:none;"></ul>
       </div>
@@ -239,7 +240,7 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
   <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
       mapOption = {
@@ -285,7 +286,7 @@
         image: markerImage // 마커 이미지
       });
 
-      coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(i + 1))[0], JSON.parse(storage.getItem(i + 1))[0]));
+      coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(i + 1))[0], JSON.parse(storage.getItem(i + 1))[1]));
 
       count++;
     }
@@ -295,11 +296,6 @@
       var X = 0,
         Y = 0,
         Z = 0;
-
-      // 지도 범위 재설정에 사용될 bounds 추가
-      for (var i = 0; i < coords_list.length; i++) {
-        bounds.extend(coords_list[i]);
-      }
 
       for (var i = 0; i < decimal.length - 1; i += 2) {
         radian.push(decimal[i] * (Math.PI / 180));
@@ -351,8 +347,6 @@
 
       // 인포윈도우를 마커위에 표시합니다
       infowindow.open(map, mid_marker);
-      // 지도 범위 재설정
-      map.setBounds(bounds);
 
       showPlacelist(Lat, Lon);
       runAjax();
@@ -384,7 +378,7 @@
     function markSubway() {
       console.log(subX);
 
-      var imageSrc = 'https://ifh.cc/g/1R5ZJ7.png', // 마커이미지의 주소입니다    
+      var imageSrc = 'https://ifh.cc/g/1R5ZJ7.png', // 마커이미지의 주소입니다
         imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
         imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
 
@@ -396,7 +390,7 @@
         // 마커를 생성합니다
         var marker = new kakao.maps.Marker({
           position: markerPosition,
-          image: markerImage // 마커이미지 설정 
+          image: markerImage // 마커이미지 설정
         });
 
         // 마커가 지도 위에 표시되도록 설정합니다
@@ -749,6 +743,15 @@
       markers.push(marker); // 배열에 생성된 마커를 추가합니다
 
       return marker;
+    }
+
+    function wide_view() {
+      // 지도 범위 재설정에 사용될 bounds 추가
+      for (var i = 0; i < coords_list.length; i++) {
+        bounds.extend(coords_list[i]);
+      }
+      // 지도 범위 재설정
+      map.setBounds(bounds);
     }
 
   </script>
