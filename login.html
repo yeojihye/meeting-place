@@ -91,7 +91,7 @@
   text-align: center;
 }
     </style>
-    <form action="index.html" method="post" class="loginForm">
+    <form action="login_action.php" method="post" class="loginForm">
       <h2>로그인</h2>
       <div class="idForm">
         <input type="text" class="id" placeholder="ID">
@@ -99,16 +99,11 @@
       <div class="passForm">
         <input type="password" class="pw" placeholder="PW">
       </div>
-      <button type="button" class="btn" onclick="button()">
+      <button type="submit" class="btn" onclick="button()">
         LOG IN
       </button>
-      <script>
-      	let button = () => {
-        	alert('login Button !')
-        }
-      </script>
       <div class="bottomText">
-        아이디가 없으신가요? <a href="http://127.0.0.1:5500/join.html">join</a>
+        아이디가 없으신가요? <a href="https://suspicious-yalow-e99df2.netlify.app/">join</a>
       </div>
     </form>
   </body>
