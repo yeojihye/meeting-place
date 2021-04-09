@@ -64,6 +64,12 @@
     #menu_wrap .option button {
       margin-left: 5px;
     }
+    
+    #goback{
+      position:fixed;
+      top:10px;
+      left:370px;
+    }
 
     #placesList li {
       list-style: none;
@@ -225,6 +231,9 @@
           <button onclick="searchSW(); return false;">지하철역</button>
           <button onclick="searchCT(); return false;">문화시설</button>
         </div>
+        <div>
+          <button id="goback" onclick="location.href='index.html'"><img src="goback.png" ></button>
+        </div>
       </div>
       <hr>
       <select id="sortby" name="sortby">
@@ -240,7 +249,7 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
   <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
       mapOption = {

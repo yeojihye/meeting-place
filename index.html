@@ -1,225 +1,243 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-  <meta charset="utf-8">
-  <title>키워드로 장소 검색하고, 클릭하여 위치 좌표 정보 얻기</title>
-  <style>
-    .map_wrap,
-    .map_wrap * {
-      margin: 0;
-      padding: 0;
-      font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
-      font-size: 12px;
-    }
+  <head>
+    <meta charset="utf-8">
+    <title>UNIV_MEETING_PLACE</title>
+    <style>
+      .map_wrap,
+      .map_wrap * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Malgun Gothic', dotum, '돋움', sans-serif;
+        font-size: 12px;
+      }
 
-    .map_wrap a,
-    .map_wrap a:hover,
-    .map_wrap a:active {
-      color: rgb(0, 0, 0);
-      text-decoration: none;
-    }
+      .map_wrap a,
+      .map_wrap a:hover,
+      .map_wrap a:active {
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+      }
 
-    .map_wrap {
-      position: relative;
-      width: 100%;
-      height: 500px;
-    }
+      .map_wrap {
+        position: relative;
+        width: 100%;
+        height: 500px;
+      }
 
-    #menu_wrap {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      width: 280px;
-      margin: 10px 0 30px 10px;
-      padding: 5px;
-      overflow-y: auto;
-      background: rgba(119, 136, 153, 0.7);
-      z-index: 1;
-      font-size: 12px;
-      border-radius: 10px;
-    }
+      #menu_wrap {
+        display:block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 280px;
+        margin: 10px 0 30px 10px;
+        padding: 5px;
+        overflow-y: auto;
+        background: rgba(190, 212, 218, 0.7);
+        z-index: 1;
+        font-size: 12px;
+        border-radius: 10px;
+      }
 
-    .bg_white {
-      background: rgb(230, 230, 250);
-    }
+      .bg_white {
+        background: rgb(230, 230, 250);
+      }
 
-    #menu_wrap hr {
-      display: block;
-      height: 1px;
-      border: 0;
-      border-top: 2px solid #5F5F5F;
-      margin: 3px 0;
-    }
+      #menu_wrap hr {
+        display: block;
+        height: 1px;
+        border: 0;
+        border-top: 2px solid #fadcdc;
+        margin: 3px 0;
+      }
 
-    #menu_wrap .option {
-      text-align: center;
-    }
+      #menu_wrap .option {
+        text-align: center;
+      }
 
-    #menu_wrap .option p {
-      margin: 10px 0;
-    }
+      #menu_wrap .option p {
+        margin: 10px 0;
+      }
 
-    #menu_wrap .option button {
-      margin-left: 5px;
-    }
+      #menu_wrap .option button {
+        margin-left: 5px;
+      }
 
-    #placesList li {
-      list-style: none;
-    }
+      #placesList li {
+        list-style: none;
+      }
 
-    #placesList .item {
-      position: relative;
-      border-bottom: 1px solid #888;
-      overflow: hidden;
-      cursor: pointer;
-      min-height: 65px;
-    }
+      #placesList .item {
+        position: relative;
+        border-bottom: 1px solid #888;
+        overflow: hidden;
+        cursor: pointer;
+        min-height: 65px;
+      }
 
-    #placesList .item span {
-      display: block;
-      margin-top: 4px;
-    }
+      #placesList .item span {
+        display: block;
+        margin-top: 4px;
+      }
 
-    #placesList .item h5,
-    #placesList .item .info {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
+      #placesList .item h5,
+      #placesList .item .info {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+      }
 
-    #placesList .item .info {
-      padding: 10px 0 10px 55px;
-    }
+      #placesList .item .info {
+        padding: 10px 0 10px 55px;
+      }
 
-    #placesList .info .gray {
-      color: #8a8a8a;
-    }
+      #placesList .info .gray {
+        color: #8a8a8a;
+      }
 
-    #placesList .info .jibun {
-      padding-left: 26px;
-      background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;
-    }
+      #placesList .info .jibun {
+        padding-left: 26px;
+        background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;
+      }
 
-    #placesList .info .tel {
-      color: #009900;
-    }
+      #placesList .info .tel {
+        color: #009900;
+      }
 
-    #placesList .item .markerbg {
-      float: left;
-      position: absolute;
-      width: 36px;
-      height: 37px;
-      margin: 10px 0 0 10px;
-      background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
-    }
+      #placesList .item .markerbg {
+        float: left;
+        position: absolute;
+        width: 36px;
+        height: 37px;
+        margin: 10px 0 0 10px;
+        background: url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png) no-repeat;
+      }
 
-    #placesList .item .marker_1 {
-      background-position: 0 -10px;
-    }
+      #placesList .item .marker_1 {
+        background-position: 0 -10px;
+      }
 
-    #placesList .item .marker_2 {
-      background-position: 0 -56px;
-    }
+      #placesList .item .marker_2 {
+        background-position: 0 -56px;
+      }
 
-    #placesList .item .marker_3 {
-      background-position: 0 -102px
-    }
+      #placesList .item .marker_3 {
+        background-position: 0 -102px
+      }
 
-    #placesList .item .marker_4 {
-      background-position: 0 -148px;
-    }
+      #placesList .item .marker_4 {
+        background-position: 0 -148px;
+      }
 
-    #placesList .item .marker_5 {
-      background-position: 0 -194px;
-    }
+      #placesList .item .marker_5 {
+        background-position: 0 -194px;
+      }
 
-    #placesList .item .marker_6 {
-      background-position: 0 -240px;
-    }
+      #placesList .item .marker_6 {
+        background-position: 0 -240px;
+      }
 
-    #placesList .item .marker_7 {
-      background-position: 0 -286px;
-    }
+      #placesList .item .marker_7 {
+        background-position: 0 -286px;
+      }
 
-    #placesList .item .marker_8 {
-      background-position: 0 -332px;
-    }
+      #placesList .item .marker_8 {
+        background-position: 0 -332px;
+      }
 
-    #placesList .item .marker_9 {
-      background-position: 0 -378px;
-    }
+      #placesList .item .marker_9 {
+        background-position: 0 -378px;
+      }
 
-    #placesList .item .marker_10 {
-      background-position: 0 -423px;
-    }
+      #placesList .item .marker_10 {
+        background-position: 0 -423px;
+      }
 
-    #placesList .item .marker_11 {
-      background-position: 0 -470px;
-    }
+      #placesList .item .marker_11 {
+        background-position: 0 -470px;
+      }
 
-    #placesList .item .marker_12 {
-      background-position: 0 -516px;
-    }
+      #placesList .item .marker_12 {
+        background-position: 0 -516px;
+      }
 
-    #placesList .item .marker_13 {
-      background-position: 0 -562px;
-    }
+      #placesList .item .marker_13 {
+        background-position: 0 -562px;
+      }
 
-    #placesList .item .marker_14 {
-      background-position: 0 -608px;
-    }
+      #placesList .item .marker_14 {
+        background-position: 0 -608px;
+      }
 
-    #placesList .item .marker_15 {
-      background-position: 0 -654px;
-    }
+      #placesList .item .marker_15 {
+        background-position: 0 -654px;
+      }
 
-    #pagination {
-      margin: 10px auto;
-      text-align: center;
-    }
+      #pagination {
+        margin: 10px auto;
+        text-align: center;
+      }
 
-    #pagination a {
-      display: inline-block;
-      margin-right: 10px;
-    }
+      #pagination a {
+        display: inline-block;
+        margin-right: 10px;
+      }
 
-    #pagination .on {
-      font-weight: bold;
-      cursor: default;
-      color: #777;
+      #pagination .on {
+        font-weight: bold;
+        cursor: default;
+        color: #777;
+      }
+      
+      #user_list {
+        position: absolute;
+        display:block;
+        top:500px;
+        left: 0;
+        width: 280px;
+        margin: 10px 0 30px 10px;
+        padding: 5px;
+        overflow-y: auto;
+        background: rgba(47, 99, 121, 0.55);
+        z-index: 1;
+        font-size: 12px;
+        border-radius: 10px;
     }
-  </style>
-</head>
+   
 
-<body onload="current_position();">
-  <div class="map_wrap">
-    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
-    <div id="menu_wrap" class="bg_white">
-      <div class="option">
-        <div>
-          <form onsubmit="searchPlaces(); return false;">
-            출발 위치 : <input type="text" value="" id="keyword" size="20" /> <br>
-            <button type="submit">검색하기</button>
-            <input type="button" value="초기화" onclick="reset_all();" />
-            <input type="button" value="사용자 추가" onclick="add_user();" />
-            <input type="button" value="중간지점 검색" onclick="goPage();" />
-          </form>
+    </style>
+  </head>
+
+  <body onload="current_position();">
+    <div class="map_wrap">
+      <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
+        <div id="menu_wrap" class="bg_white"style="width:280px;height:470px;">
+          <div class="option">
+            <div>
+              <form onsubmit="searchPlaces(); return false;">
+                출발 위치 : <input type="text" value="" id="keyword" size="20" /> 
+                <button type="submit">검색</button><br>
+                <input type="button" value="초기화" onclick="reset_all();" />
+                <input type="button" value="사용자 추가" onclick="add_user();" />
+                <input type="button" value="중간지점 검색" onclick="goPage();" />
+              </form>
+            </div>
+          </div>
+          <hr>
+          <ul id="placesList"></ul>
+          <div id="pagination"></div>
         </div>
-      </div>
-      <hr>
-      <ul id="placesList"></ul>
-      <div id="pagination"></div>
+        <div id="user_list" style="width:280px;height:170px;">
+          <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
+          <ul id="userlist"></ul>
+        </div>
+    </div>
     </div>
 
-
-
     <p id="result"></p>
-
-
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
-
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
     <div id="field"></div>
 
     <script>
@@ -575,10 +593,17 @@
           tmp_place_name = [];
           tmp_coords = [];
 
-          var div = document.createElement('div');
+          var adduser = document.createElement('div');
+          adduser.innerHTML ="<img src='person.png'>사용자" + user_num + " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
+          adduser.style.borderBottom = "1px solid #2e6076";
+          adduser.addEventListener("click",
+            function(){
+              var p=this.parentElement;
+              p.removeChild(this);
+              storage.removeItem(user_num, JSON.stringify([tmp_coords[tmp_coords.length - 2], tmp_coords[tmp_coords.length - 1]]));
+            })
+          document.getElementById('userlist').appendChild(adduser);
 
-          div.innerHTML = "사용자" + user_num + " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
-          document.getElementById('field').appendChild(div);
         }
       }
 
@@ -612,6 +637,6 @@
         }
       }
     </script>
-</body>
+  </body>
 
 </html>
