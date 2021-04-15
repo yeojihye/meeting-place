@@ -64,7 +64,7 @@
     #menu_wrap .option button {
       margin-left: 5px;
     }
-    
+
     #goback{
       position:fixed;
       top:10px;
@@ -249,7 +249,7 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
   <script>
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
       mapOption = {
@@ -278,8 +278,8 @@
     for (var i = 0; i < storage.length; i++) {
 
       // 검색된 위치의 위도 경도 저장
-      decimal.push(JSON.parse(storage.getItem(i + 1))[0]);
-      decimal.push(JSON.parse(storage.getItem(i + 1))[1]);
+      decimal.push(JSON.parse(storage.getItem(storage.key(i)))[0]);
+      decimal.push(JSON.parse(storage.getItem(storage.key(i)))[1]);
 
       // 마커 이미지의 이미지 주소입니다
       var imageSrc = "https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png";
@@ -290,12 +290,12 @@
 
       var marker = new kakao.maps.Marker({
         map: map, // 마커를 표시할 지도
-        position: new kakao.maps.LatLng(JSON.parse(storage.getItem(i + 1))[0], JSON.parse(storage.getItem(i + 1))[1]), // 마커를 표시할 위치
-        title: "사용자" + count, // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        position: new kakao.maps.LatLng(JSON.parse(storage.getItem(storage.key(i)))[0], JSON.parse(storage.getItem(storage.key(i)))[1]), // 마커를 표시할 위치
+        title: "사용자" + storage.key(i), // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
         image: markerImage // 마커 이미지
       });
 
-      coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(i + 1))[0], JSON.parse(storage.getItem(i + 1))[1]));
+      coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(storage.key(i)))[0], JSON.parse(storage.getItem(storage.key(i)))[1]));
 
       count++;
     }

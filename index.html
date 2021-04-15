@@ -190,34 +190,32 @@
         cursor: default;
         color: #777;
       }
-      
+
       #user_list {
         position: absolute;
-        display:block;
-        top:500px;
-        left: 0;
-        width: 280px;
-        margin: 10px 0 30px 10px;
+        display:inline-block;
+        margin: 5px;
+        margin-top:0;
+        padding-top:0;
         padding: 5px;
         overflow-y: auto;
         background: rgba(47, 99, 121, 0.55);
-        z-index: 1;
         font-size: 12px;
-        border-radius: 10px;
+        border-radius: 5px;
     }
-   
+
 
     </style>
   </head>
 
   <body onload="current_position();">
     <div class="map_wrap">
-      <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
+      <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;display:inline-block;"></div>
         <div id="menu_wrap" class="bg_white"style="width:280px;height:470px;">
           <div class="option">
             <div>
               <form onsubmit="searchPlaces(); return false;">
-                출발 위치 : <input type="text" value="" id="keyword" size="20" /> 
+                출발 위치 : <input type="text" value="" id="keyword" size="20" />
                 <button type="submit">검색</button><br>
                 <input type="button" value="초기화" onclick="reset_all();" />
                 <input type="button" value="사용자 추가" onclick="add_user();" />
@@ -229,7 +227,7 @@
           <ul id="placesList"></ul>
           <div id="pagination"></div>
         </div>
-        <div id="user_list" style="width:280px;height:170px;">
+        <div id="user_list" style="height:auto; width:18%; min-height:80px;">
           <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
           <ul id="userlist"></ul>
         </div>
@@ -237,11 +235,12 @@
     </div>
 
     <p id="result"></p>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=6f80a95343d5fe263bbed3564225e4a0&libraries=services,clusterer,drawing"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
     <div id="field"></div>
 
     <script>
       var user_num = 0; // 사용자 수
+      var storage_num = 0; // 스토리지에서 키값
       var base_loc; // geolocation으로 현재 위치를  받아와서 기본 위치로 설정
       var user_road_address = []; // 사용자 출발 위치의 도로명주소 저장 리스트
       var tmp_road_address = []; // 사용자 출발 위치 확정 전 선택된 place 객체의 도로명주소 저장 리스트
@@ -594,13 +593,17 @@
           tmp_coords = [];
 
           var adduser = document.createElement('div');
+          adduser.setAttribute("id", "div_"+user_num);
           adduser.innerHTML ="<img src='person.png'>사용자" + user_num + " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
           adduser.style.borderBottom = "1px solid #2e6076";
           adduser.addEventListener("click",
             function(){
               var p=this.parentElement;
               p.removeChild(this);
-              storage.removeItem(user_num, JSON.stringify([tmp_coords[tmp_coords.length - 2], tmp_coords[tmp_coords.length - 1]]));
+              storage.removeItem(adduser.id.split("_")[1]);
+              user_num--;
+              user_place_name.pop();
+              user_road_address.pop();
             })
           document.getElementById('userlist').appendChild(adduser);
 
