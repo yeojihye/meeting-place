@@ -65,10 +65,10 @@
       margin-left: 5px;
     }
 
-    #goback{
-      position:fixed;
-      top:10px;
-      left:370px;
+    #goback {
+      position: fixed;
+      top: 10px;
+      left: 370px;
     }
 
     #placesList li {
@@ -218,7 +218,7 @@
         <div>
           <span id="centerAddr"></span>
           <label for="radius"> 주변 </label>
-          <select id="radius" name="radius" onchange="changeRadius()">
+          <select id="radius" name="radius">
             <option value=500 selected>500m</option>
             <option value=1000>1km</option>
             <option value=1500>1.5km</option>
@@ -232,7 +232,7 @@
           <button onclick="searchCT(); return false;">문화시설</button>
         </div>
         <div>
-          <button id="goback" onclick="location.href='index.html'"><img src="goback.png" ></button>
+          <button id="goback" onclick="location.href='index.html'"><img src="goback.png"></button>
         </div>
       </div>
       <hr>
@@ -249,8 +249,9 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=827d671ff82fc833b2e5ada087f5b9aa&libraries=services,clusterer,drawing"></script>
   <script>
+
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
       mapOption = {
         center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
@@ -408,7 +409,6 @@
 
     }
 
-
     function showPlacelist(y, x) {
       // 중심좌표 변수
       mid_point = new kakao.maps.LatLng(y, x);
@@ -429,46 +429,30 @@
       $.ajax({
         method: "GET",
         url: "https://dapi.kakao.com/v2/local/search/category",
-        // 테스트: 서현역 (37.38456795311141, 127.12433099730022)
-        data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 5000 },
-        headers: { Authorization: "KakaoAK 0f0928687476565dc31f0983785f7e31" } //REST API 키
+        data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 10000, sort: "distance" },
+        headers: { Authorization: "KakaoAK 5ab558569b4444248d69a403f56a7a6b" } //REST API 키
       })
         .done(function (msg) {
-          for (var i = 0; i < 5; i++) {
-            $("#subwayList").append("<li><input type='radio' onclick='changeSub(event)' name='place_name' value='" +
-              i + "'>" + msg.documents[i].place_name + "</li>")
+          for (var i = 0; i < 5; i++) { // 지하철역 최대 5개까지 출력
+            $("#subwayList").append("<li><input type='radio' onclick='changeSub(event)' name='place_name' value=" +
+              i + ">" + msg.documents[i].place_name + "</li>")
             subY.push(msg.documents[i].y);
             subX.push(msg.documents[i].x);
           }
         });
     }
 
-    // 근처 지하철역 radio value 변경 함수
+    // 근처 지하철역을 중간지점으로 설정
     function changeSub(event) {
-      if (event.target.value === "0")
-        showPlacelist(subY[0], subX[0]);
-      else if (event.target.value === "1")
-        showPlacelist(subY[1], subX[1]);
-      else if (event.target.value === "2")
-        showPlacelist(subY[2], subX[2]);
-      else if (event.target.value === "3")
-        showPlacelist(subY[3], subX[3]);
-      else if (event.target.value === "4")
-        showPlacelist(subY[4], subX[4]);
+      for (var i = 0; i < 5; i++) {
+        if (event.target.value == i) {
+          showPlacelist(subY[i], subX[i]);
+        }
+      }
     }
 
     // 마커를 담을 배열입니다
     var markers = [];
-    // 반경 변수
-    var s = document.getElementById("radius");
-    var index = s.selectedIndex;
-    var radiusvalue = s.options[index].value; // 기본 500m
-    // 반경을 변경하는 함수입니다.
-    function changeRadius() {
-      var s = document.getElementById("radius");
-      var index = s.selectedIndex;
-      var radiusvalue = s.options[index].value;
-    }
 
     function searchAddrFromCoords(coords, callback) {
       // 좌표로 행정동 주소 정보를 요청합니다
@@ -492,21 +476,18 @@
     var ps = new kakao.maps.services.Places();
     // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
     var infowindow2 = new kakao.maps.InfoWindow({
-      zIndex: 1
+      zIndex: 1,
+      disableAutoPan: true
     });
 
     // 음식점 코드 검색을 요청하는 함수입니다
     function searchFD() {
-      // 반경 설정
-      var s = document.getElementById("radius");
-      var index = s.selectedIndex;
-      var radiusvalue = s.options[index].value;
       // 정렬 방식으로 거리순을 선택하였을 경우
       if (sortby.value == "DISTANCE") {
         ps.categorySearch('FD6', placesSearchCB, {
           // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
           location: mid_point,
-          radius: radiusvalue,
+          radius: radius.value,
           sort: kakao.maps.services.SortBy.DISTANCE
         });
         return;
@@ -515,33 +496,38 @@
       ps.categorySearch('FD6', placesSearchCB, {
         // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
         location: mid_point,
-        radius: radiusvalue,
+        radius: radius.value,
       });
     }
+
     // 지하철역 코드 검색을 요청하는 함수입니다
     function searchSW() {
-      var s = document.getElementById("radius");
-      var index = s.selectedIndex;
-      var radiusvalue = s.options[index].value;
-      // 장소검색 객체를 통해 지하철역 코드 검색을 요청합니다
+      // 정렬 방식으로 거리순을 선택하였을 경우
+      if (sortby.value == "DISTANCE") {
+        ps.categorySearch('SW8', placesSearchCB, {
+          // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
+          location: mid_point,
+          radius: radius.value,
+          sort: kakao.maps.services.SortBy.DISTANCE
+        });
+        return;
+      }
+      // 장소검색 객체를 통해 음식점 코드 검색을 요청합니다
       ps.categorySearch('SW8', placesSearchCB, {
         // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
         location: mid_point,
-        radius: radiusvalue
+        radius: radius.value,
       });
     }
 
     // 문화시설 코드 검색을 요청하는 함수입니다
     function searchCT() {
-      var s = document.getElementById("radius");
-      var index = s.selectedIndex;
-      var radiusvalue = s.options[index].value;
       // 정렬 방식으로 거리순을 선택하였을 경우
       if (sortby.value == "DISTANCE") {
         ps.categorySearch('CT1', placesSearchCB, {
           // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
           location: mid_point,
-          radius: radiusvalue,
+          radius: radius.value,
           sort: kakao.maps.services.SortBy.DISTANCE
         });
         return;
@@ -550,21 +536,18 @@
       ps.categorySearch('CT1', placesSearchCB, {
         // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
         location: mid_point,
-        radius: radiusvalue,
+        radius: radius.value,
       });
     }
 
     // 카페 코드 검색을 요청하는 함수입니다
     function searchCE() {
-      var s = document.getElementById("radius");
-      var index = s.selectedIndex;
-      var radiusvalue = s.options[index].value;
       // 정렬 방식으로 거리순을 선택하였을 경우
       if (sortby.value == "DISTANCE") {
         ps.categorySearch('CE7', placesSearchCB, {
           // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
           location: mid_point,
-          radius: radiusvalue,
+          radius: radius.value,
           sort: kakao.maps.services.SortBy.DISTANCE
         });
         return;
@@ -573,7 +556,7 @@
       ps.categorySearch('CE7', placesSearchCB, {
         // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
         location: mid_point,
-        radius: radiusvalue,
+        radius: radius.value,
       });
     }
 
