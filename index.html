@@ -253,7 +253,8 @@
       // 마커 생성
       var marker = new kakao.maps.Marker(),
         infowindow = new kakao.maps.InfoWindow({
-          zIndex: 1
+          zIndex: 1,
+          disableAutoPan: true
         });
 
       var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -445,6 +446,9 @@
               };
 
               itemEl.onclick = function() {
+
+                map.setBounds(bounds);
+
                 // 클릭된 마커가 없고, click 마커가 클릭된 마커가 아니면
                 // 마커의 이미지를 클릭 이미지로 변경합니다
                 if (!selectedMarker || selectedMarker !== marker) {

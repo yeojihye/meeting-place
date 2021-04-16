@@ -249,7 +249,7 @@
     crossorigin="anonymous"></script>
   <!--kakao maps-->
   <script type="text/javascript"
-    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=827d671ff82fc833b2e5ada087f5b9aa&libraries=services,clusterer,drawing"></script>
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138e15009e62e9907af3d9a1e59d0c54&libraries=services,clusterer,drawing"></script>
   <script>
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div
@@ -630,6 +630,10 @@
 
           itemEl.onmouseout = function () {
             infowindow2.close();
+          };
+
+          itemEl.onclick = function () {
+            map.setBounds(bounds);
           };
         })(marker, places[i].place_name);
 
