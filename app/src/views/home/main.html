@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>UNIV_MEETING_PLACE</title>
+    <link rel="stylesheet" href="/css/home/index.css">
+  </head>
+
+  <body onload="current_position();">
+    <div class="map_wrap">
+      <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;display:inline-block;"></div>
+        <div id="menu_wrap" class="bg_white"style="width:280px;height:470px;">
+          <div class="option">
+            <div>
+              <form onsubmit="searchPlaces(); return false;">
+                출발 위치 : <input type="text" value="" id="keyword" size="20" />
+                <button type="submit">검색</button><br>
+                <input type="button" value="초기화" onclick="reset_all();" />
+                <input type="button" value="사용자 추가" onclick="add_user();" />
+                <input type="button" value="중간지점 검색" onclick="goPage();" />
+              </form>
+            </div>
+          </div>
+          <hr>
+          <ul id="placesList"></ul>
+          <div id="pagination"></div>
+        </div>
+        <div id="user_list" style="height:auto; width:18%; min-height:80px;">
+          <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
+          <ul id="userlist"></ul>
+        </div>
+    </div>
+    </div>
+    <p id="result"></p>
+    <div id="field"></div>
+    
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=827d671ff82fc833b2e5ada087f5b9aa&libraries=services,clusterer,drawing"></script>
+    <script src="/js/home/index.js" defer></script>
+  </body>
+
+</html>

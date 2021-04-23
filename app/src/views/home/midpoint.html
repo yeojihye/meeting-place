@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>중간지점 추천</title>
+  <link rel="stylesheet" href="/css/home/midpoint.css">
+</head>
+
+<body onload="search_mid();">
+  <div class="map_wrap">
+    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
+    <div id="menu_wrap" class="bg_white">
+      <div>
+        <a href="javascript:toggle();">주변 지하철역 중심으로 보기</a> |
+        <a href="javascript:wide_view();">전체 출발위치 포함해서 보기</a>
+        <hr>
+        <ul id="subwayList" style="display:none;"></ul>
+      </div>
+      <div class="option">
+        <div>
+          <span id="centerAddr"></span>
+          <label for="radius"> 주변 </label>
+          <select id="radius" name="radius">
+            <option value=500 selected>500m</option>
+            <option value=1000>1km</option>
+            <option value=1500>1.5km</option>
+            <option value=2000>2km</option>
+          </select>
+        </div>
+        <div>
+          <button onclick="searchFD(); return false;">음식점</button>
+          <button onclick="searchCE(); return false;">카페</button>
+          <button onclick="searchSW(); return false;">지하철역</button>
+          <button onclick="searchCT(); return false;">문화시설</button>
+        </div>
+        <div>
+          <button id="goback" onclick="location.href='index.html'"><img src="goback.png"></button>
+        </div>
+      </div>
+      <hr>
+      <select id="sortby" name="sortby">
+        <option value=ACCURACY selected>정확도순</option>
+        <option value=DISTANCE>거리순</option>
+      </select>
+      <ul id="placesList"></ul>
+      <div id="pagination"></div>
+    </div>
+  </div>
+  
+  <!--ajax-->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
+  <!--kakao maps-->
+  <script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=827d671ff82fc833b2e5ada087f5b9aa&libraries=services,clusterer,drawing"></script>
+  <script src="/js/home/midpoint.js" defer></script>
+</body>
+
+</html>
