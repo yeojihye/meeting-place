@@ -1,5 +1,23 @@
 "use strict";
 
+$.ajax({
+  url: '/assets/전국대학리스트.csv',
+  dataType: 'text',
+}).done(successFunction);
+
+function successFunction(data) {
+  var allRows = data.split(/\r?\n|\r/);
+  
+  for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
+      var rowCells = allRows[singleRow].split(',');
+      var rowCell = 0;
+      var option = `<option value="${rowCells[rowCell]}">`;
+      option += rowCells[rowCell];
+      option += '</option>';
+      $('#univ').append(option);
+  } 
+}
+
 const id = document.querySelector("#id"),
   name = document.querySelector("#name"),
   psword = document.querySelector("#psword"),
