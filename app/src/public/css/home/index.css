@@ -9,7 +9,7 @@
 .map_wrap a,
 .map_wrap a:hover,
 .map_wrap a:active {
-  color: #000;
+  color: rgb(0, 0, 0);
   text-decoration: none;
 }
 
@@ -20,29 +20,29 @@
 }
 
 #menu_wrap {
+  display:block;
   position: absolute;
   top: 0;
   left: 0;
-  bottom: 0;
-  width: 350px;
+  width: 280px;
   margin: 10px 0 30px 10px;
   padding: 5px;
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(190, 212, 218, 0.7);
   z-index: 1;
   font-size: 12px;
   border-radius: 10px;
 }
 
 .bg_white {
-  background: #fff;
+  background: rgb(230, 230, 250);
 }
 
 #menu_wrap hr {
   display: block;
   height: 1px;
   border: 0;
-  border-top: 2px solid #5F5F5F;
+  border-top: 2px solid #fadcdc;
   margin: 3px 0;
 }
 
@@ -56,12 +56,6 @@
 
 #menu_wrap .option button {
   margin-left: 5px;
-}
-
-#goback {
-  position: fixed;
-  top: 10px;
-  left: 370px;
 }
 
 #placesList li {
@@ -190,6 +184,16 @@
   color: #777;
 }
 
-#centerAddr {
-  font-weight: bold;
+#user_list {
+  position: absolute;
+  display:inline-block;
+  margin: 5px;
+  margin-top:0;
+  padding-top:0;
+  padding: 5px;
+  overflow-y: auto;
+  background: rgba(47, 99, 121, 0.55);
+  font-size: 12px;
+  border-radius: 5px;
 }
+

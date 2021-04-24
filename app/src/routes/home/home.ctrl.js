@@ -19,10 +19,10 @@ const output = {
     res.render("home/register");
   },
 
-  main: (req, res) => {
-    logger.info(`GET /register 304 "회원가입 화면으로 이동"`);
-    res.render("home/main");
-  }
+  midpoint: (req, res) => {
+    logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
+    res.render("home/midpoint");
+  },
 };
 
 const process = {
