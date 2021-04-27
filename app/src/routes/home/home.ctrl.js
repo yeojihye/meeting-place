@@ -34,6 +34,12 @@ const output = {
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
     res.render("home/midpoint", { is_logined: is_logined, name: req.session.name });
   },
+
+  logout: (req, res) => {
+    req.session.destroy(function(err){
+      res.redirect('/');
+    });
+  },
 };
 
 const process = {
