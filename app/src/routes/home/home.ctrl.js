@@ -3,10 +3,20 @@
 const logger = require("../../config/logger");
 const User = require("../../models/User");
 
+// 로그인 상태 확인
+function authIsOwner(req, res) {
+  if (req.session.is_logined) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 const output = {
   home: (req, res) => {
+    var is_logined = authIsOwner(req, res);
     logger.info(`GET / 304 "홈 화면으로 이동"`);
-    res.render("home/index");
+    res.render("home/index", { is_logined: is_logined, name: req.session.name });
   },
 
   login: (req, res) => {
@@ -20,8 +30,9 @@ const output = {
   },
 
   midpoint: (req, res) => {
+    var is_logined = authIsOwner(req, res);
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
-    res.render("home/midpoint");
+    res.render("home/midpoint", { is_logined: is_logined, name: req.session.name });
   },
 };
 
@@ -30,6 +41,9 @@ const process = {
     const user = new User(req.body);
     const response = await user.login();
 
+    req.session.is_logined = true;
+    req.session.name = user.body.id;
+
     const url = {
       method: "POST",
       path: "/login",
@@ -37,6 +51,7 @@ const process = {
     };
 
     log(response, url);
+
     return res.status(url.status).json(response);
   },
 

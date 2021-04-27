@@ -8,6 +8,12 @@
 </head>
 
 <body onload="search_mid();">
+  <%=name%>
+  <% if (is_logined) {%>
+      | <a href="/logout">logout</a>
+  <% } else { %>
+      <a href="/login">login</a>
+  <% } %>
   <div class="map_wrap">
     <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
