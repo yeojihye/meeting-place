@@ -176,7 +176,7 @@ function runAjax() {
         method: "GET",
         url: "https://dapi.kakao.com/v2/local/search/category",
         data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 10000, sort: "distance" },
-        headers: { Authorization: "KakaoAK 5ab558569b4444248d69a403f56a7a6b" } //REST API 키
+        headers: { Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5" } //REST API 키
     })
         .done(function (msg) {
             for (var i = 0; i < 5; i++) { // 지하철역 최대 5개까지 출력
