@@ -1,0 +1,28 @@
+"use strict";
+
+const db = require("../config/db");
+const User = require("./User");
+
+class UserStorage {
+  static getUserInfo(id) {
+    return new Promise((resolve, reject) => {
+      const query = "SELECT * FROM users WHERE id = ?;";
+      db.query(query, [id], (err, data) => { //첫 번째 파라미터로 error, 두 번째 파라미터로 data 불러옴
+        if (err) reject(`${err}`);
+        else resolve(data[0]);
+      });
+    });
+  }
+
+  static async save(userInfo) {
+    return new Promise((resolve, reject) => {
+      const query = "INSERT INTO users(id, name, salt, psword, email, gender, univ) VALUES(?, ?, ?, ?, ?, ?, ?);";
+      db.query(query, [userInfo.id, userInfo.name, userInfo.salt, userInfo.psword, userInfo.email, userInfo.gender, userInfo.univ], (err) => {
+        if (err) reject(`${err}`);
+        else resolve({ success: true });
+      });
+    });
+  }
+}
+
+module.exports = UserStorage;

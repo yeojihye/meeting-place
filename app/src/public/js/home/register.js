@@ -3,9 +3,15 @@
 $.ajax({
   url: '/assets/전국대학리스트.csv',
   dataType: 'text',
-}).done(successFunction);
+}).done(appendSelectOption);
 
-function successFunction(data) {
+// 이메일 유효성 체크 
+function email_check( email ) {    
+  var regex=/([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+  return (email != '' && email != 'undefined'&& regex.test(email)); 
+}
+
+function appendSelectOption(data) {
   var allRows = data.split(/\r?\n|\r/);
   
   for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
@@ -38,6 +44,9 @@ function register() {
   if (!univ.value) return alert("대학교를 입력해주십시오.");
   if (psword.value !== confirmPsword.value)
     return alert("비밀번호가 일치하지 않습니다.");
+  if(! email_check(email.value) ) {
+    return alert("이메일 형식으로 적어주십시오.");
+  };
 
   const req = {
     id: id.value,
