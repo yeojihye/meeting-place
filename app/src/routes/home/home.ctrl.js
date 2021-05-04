@@ -47,14 +47,16 @@ const process = {
     const user = new User(req.body);
     const response = await user.login();
 
-    req.session.is_logined = true;
-    req.session.name = user.body.id;
-
     const url = {
       method: "POST",
       path: "/login",
       status: response.err ? 400 : 200,
     };
+
+    if (response.success) {
+      req.session.is_logined = true;
+      req.session.name = user.body.id;
+    }
 
     log(response, url);
 

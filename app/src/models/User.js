@@ -1,10 +1,19 @@
 "use strict";
 
 const UserStorage = require("./UserStorage");
+const crypto = require('crypto');
 
 class User {
   constructor(body) {
     this.body = body;
+  }
+
+  static async hashPsword(client, salt) {
+    return new Promise((resolve, reject) => {
+      crypto.pbkdf2(client.psword, salt, 99999, 64, 'sha512', (err, key) => {
+        resolve(key.toString('base64'));
+      });
+    });
   }
 
   async login() {
@@ -13,7 +22,9 @@ class User {
       const user = await UserStorage.getUserInfo(client.id);
 
       if (user) {
-        if (user.id === client.id && user.psword === client.psword) {
+        const clientHashPsword = await User.hashPsword(client, user.salt);
+
+        if (user.id === client.id && user.psword === clientHashPsword) {
           return { success: true };
         }
         return { success: false, msg: "비밀번호가 틀렸습니다." };
@@ -25,8 +36,11 @@ class User {
   }
 
   async register() {
-    const client = this.body;
+    const client = this.body;    
+    client.salt = crypto.randomBytes(64).toString('base64');  
+
     try {
+      client.psword = await User.hashPsword(client, client.salt);
       const response = await UserStorage.save(client);
       return response;
     } catch (err) {
