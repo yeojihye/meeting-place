@@ -358,7 +358,7 @@ function displayPlaces(places) {
         // LatLngBounds 객체에 좌표를 추가합니다
         bounds.extend(placePosition);
 
-        // 마커와 검색결과 항목에 mouseover 했을때
+        // 마커와 검색결과 항목에 mouseover 했을때                   
         // 해당 장소에 인포윈도우에 장소명을 표시합니다
         // mouseout 했을 때는 인포윈도우를 닫습니다
         (function (marker, title) {
@@ -380,7 +380,8 @@ function displayPlaces(places) {
 
             itemEl.onclick = function () {
                 map.setBounds(bounds);
-            };
+                confirm_place(title);
+            }
         })(marker, places[i].place_name);
 
         fragment.appendChild(itemEl);
@@ -392,6 +393,36 @@ function displayPlaces(places) {
 
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
+}
+function confirm_place(title) {
+    if (confirm(`${title}을(를) 선택하시겠습니까?`) == true){
+      const req = {
+        name: title,
+    };
+                    
+    fetch("/midpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(req),
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          if (res.success) {
+            // location.href = "/"; // 장소공유 및 경로안내 페이지로 이동
+          } else {
+            if (res.err) return alert(res.err);
+            alert(res.msg);
+          }
+        })
+        .catch((err) => {
+          console.error("장소 데이터 저장 중 에러 발생");
+        });              
+    } else {
+        return;
+    }
+    
 }
 // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
 function displayPagination(pagination) {
