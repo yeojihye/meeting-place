@@ -1,6 +1,7 @@
 "use strict";
 
 const UserStorage = require("./UserStorage");
+const PlaceStorage = require("./PlaceStorage");
 const crypto = require('crypto');
 
 class User {
@@ -42,6 +43,22 @@ class User {
     try {
       client.psword = await User.hashPsword(client, client.salt);
       const response = await UserStorage.save(client);
+      return response;
+    } catch (err) {
+      return { success: false, err };
+    }
+  }
+
+  async confirm_place(id) {
+    const place = this.body; 
+    const user = await UserStorage.getUserInfo(id);
+    console.log(user.id);
+    console.log(user.univ);
+    console.log(user.gender);
+    console.log(place.name);
+
+    try {
+      const response = await PlaceStorage.save(user.id, place.name);
       return response;
     } catch (err) {
       return { success: false, err };

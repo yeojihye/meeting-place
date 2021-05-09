@@ -76,6 +76,20 @@ const process = {
     log(response, url);
     return res.status(url.status).json(response);
   },
+
+  confirm: async (req, res) => {
+    const user = new User(req.body);
+    const response = await user.confirm_place(req.session.name);
+
+    const url = {
+      method: "POST",
+      path: "/midpoint",
+      status: response.err ? 409 : 201,
+    };
+
+    log(response, url);
+    return res.status(url.status).json(response);
+  },
 };
 
 module.exports = {
