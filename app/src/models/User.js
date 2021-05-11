@@ -64,6 +64,20 @@ class User {
       return { success: false, err };
     }
   }
+
+  async genRecommendList(id) {
+    const user = await UserStorage.getUserInfo(id);
+    try {
+      const data = await PlaceStorage.getRecommendData(user);
+      const response = [];
+      for (var i = 0; i < 10; i++) {
+        response[i] = data[i].place_name
+      }
+      return response;
+    } catch (err) {
+      return { success: false, err };
+    }
+  }
 }
 
 module.exports = User;

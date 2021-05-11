@@ -12,6 +12,22 @@ class PlaceStorage {
         });
       });
     }
+
+    static async getRecommendData(userInfo) {
+      return new Promise((resolve, reject) => {
+        const query = `SELECT place_name, COUNT(place_name) FROM recommend_data 
+                        WHERE univ = ? and gender = ?
+                        GROUP BY place_name
+                        ORDER BY COUNT(place_name) DESC;`;
+        db.query(query, [userInfo.univ, userInfo.gender], (err, data) => {
+          if (err) reject(`${err}`);
+          else {
+            console.log(data);
+            resolve(data);
+          }
+        });
+      });
+    }
   }
 
 module.exports = PlaceStorage;

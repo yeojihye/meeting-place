@@ -2,6 +2,7 @@
 
 const logger = require("../../config/logger");
 const User = require("../../models/User");
+const UserStorage = require("../../models/UserStorage");
 
 // 로그인 상태 확인
 function authIsOwner(req, res) {
@@ -29,10 +30,17 @@ const output = {
     res.render("home/register");
   },
 
-  midpoint: (req, res) => {
+  midpoint: async (req, res) => {
     var is_logined = authIsOwner(req, res);
+    const userInfo = await UserStorage.getUserInfo(req.session.name);
+    const user = new User(req.body);
+    const recommendList = await user.genRecommendList(req.session.name);
+    var userGender = '';
+    if (userInfo.gender === "M") userGender = "남성";
+    else userGender = "여성";
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
-    res.render("home/midpoint", { is_logined: is_logined, name: req.session.name });
+    res.render("home/midpoint", { is_logined: is_logined, name: req.session.name
+      , recommendList: recommendList, univ: userInfo.univ, gender: userGender });
   },
 
   logout: (req, res) => {
