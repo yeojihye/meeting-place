@@ -9,6 +9,7 @@ router.get("/login", ctrl.output.login);
 router.get("/logout", ctrl.output.logout);
 router.get("/register", ctrl.output.register);
 router.get("/midpoint", ctrl.output.midpoint);
+router.get("/getdb", ctrl.output.getdb);
 
 router.post("/login", ctrl.process.login);
 router.post("/register", ctrl.process.register);

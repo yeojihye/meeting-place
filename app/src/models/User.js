@@ -50,15 +50,11 @@ class User {
   }
 
   async confirm_place(id) {
-    const place = this.body; 
+    const place = this.body;
     const user = await UserStorage.getUserInfo(id);
-    console.log(user.id);
-    console.log(user.univ);
-    console.log(user.gender);
-    console.log(place.name);
 
     try {
-      const response = await PlaceStorage.save(user.id, place.name);
+      const response = await PlaceStorage.save(user, place);
       return response;
     } catch (err) {
       return { success: false, err };
@@ -68,11 +64,7 @@ class User {
   async genRecommendList(id) {
     const user = await UserStorage.getUserInfo(id);
     try {
-      const data = await PlaceStorage.getRecommendData(user);
-      const response = [];
-      for (var i = 0; i < 10; i++) {
-        response[i] = data[i].place_name
-      }
+      const response = await PlaceStorage.getRecommendData(user);
       return response;
     } catch (err) {
       return { success: false, err };

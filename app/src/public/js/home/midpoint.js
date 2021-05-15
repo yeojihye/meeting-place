@@ -132,8 +132,6 @@ function backToMid() {
 
 // 근처 지하철역 마다 마커 표시
 function markSubway() {
-    console.log(subX);
-
     var imageSrc = 'https://ifh.cc/g/1R5ZJ7.png', // 마커이미지의 주소입니다
         imageSize = new kakao.maps.Size(30, 30), // 마커이미지의 크기입니다
         imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
@@ -155,7 +153,42 @@ function markSubway() {
 
 }
 
+// 원 초기 설정 
+var circle = new kakao.maps.Circle({
+    map: map,
+    center : new kakao.maps.LatLng(33.450701, 126.570667),
+    radius: 1000, // 반경 1km
+});
+circle.setMap(map);
+
+// db에 있는 장소들이 영역내에 있는지 확인하고, 추천리스트를 출력하는 함수
+function checkRecommendData(y, x) {
+    // db에 있는 데이터를 가져온다.
+    fetch('/getdb')
+    .then(res => res.json())
+    .then(res => {
+        // 추천리스트 초기화
+        $("#recommendList *").remove();
+        var mid_point = new kakao.maps.LatLng(y, x);
+        // 지도에 그려진 원 모두 삭제
+        circle.setMap(null);
+        // 중심좌표를 중심으로 원 그리기
+        circle.setMap(map);
+        circle.setPosition(mid_point);
+        // 원을 포함하는 최소의 사각형 영역을 구한다.
+        var midBounds = circle.getBounds();
+        // db에 있는 장소좌표가 영역 내에 있으면 리스트로 출력한다. 
+        for (var i = 0; i < res.length; i++) {
+            var dbcoord = new kakao.maps.LatLng(res[i].lat, res[i].lng);
+            if (midBounds.contain(dbcoord)) {
+                $("#recommendList").append("<li>"+res[i].place_name+"</li>");
+            }
+        };
+    });
+}
+
 function showPlacelist(y, x) {
+    checkRecommendData(y, x);
     // 중심좌표 변수
     mid_point = new kakao.maps.LatLng(y, x);
     // 중심좌표를 지도 중심으로 설정
@@ -380,7 +413,7 @@ function displayPlaces(places) {
 
             itemEl.onclick = function () {
                 map.setBounds(bounds);
-                confirm_place(title);
+                getAddress(title, placePosition);
             }
         })(marker, places[i].place_name);
 
@@ -394,11 +427,26 @@ function displayPlaces(places) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
 }
-function confirm_place(title) {
+function getAddress(title, placePosition) {
+    $.ajax({
+        method: "GET",
+        url: "https://dapi.kakao.com/v2/local/geo/coord2address",
+        data: { y: placePosition.Ma, x: placePosition.La },
+        headers: { Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5" } //REST API 키
+    })
+        .done(function (msg) {
+            var address = msg.documents[0].address;
+            confirm_place(title, placePosition, address);
+        });
+}
+function confirm_place(title, placePosition, address) {
     if (confirm(`${title}을(를) 선택하시겠습니까?`) == true){
-      const req = {
-        name: title,
-    };
+        const req = {
+            name: title,
+            lat: placePosition.Ma,
+            lng: placePosition.La,
+            addr: address,
+        };
                     
     fetch("/midpoint", {
         method: "POST",
