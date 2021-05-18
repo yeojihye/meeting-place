@@ -13,5 +13,6 @@ router.get("/midpoint", ctrl.output.midpoint);
 router.post("/login", ctrl.process.login);
 router.post("/register", ctrl.process.register);
 router.post("/midpoint", ctrl.process.confirm);
+router.put("/midpoint", ctrl.output.getdb);
 
 module.exports = router;

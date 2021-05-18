@@ -23,11 +23,7 @@
       </script>
       <a href="/login">login</a>
   <% } %>
-  <ol id="recommendList"><%=univ%> <%=gender%> 기준 추천 장소<br>
-    <% for (var i = 0; i < 10; i++) { %>
-      <li><%=recommendList[i]%></li>
-    <% } %>
-  </ol>
+  <ol id="recommendList"><%=univ%> <%=gender%> 기준 추천 장소<br></ol>
   <div class="map_wrap">
     <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
