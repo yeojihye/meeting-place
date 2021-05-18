@@ -158,15 +158,20 @@ var circle = new kakao.maps.Circle({
     map: map,
     center : new kakao.maps.LatLng(33.450701, 126.570667),
     radius: 1000, // 반경 1km
+    strokeOpacity: 0, // 원 불투명도
 });
 circle.setMap(map);
 
 // db에 있는 장소들이 영역내에 있는지 확인하고, 추천리스트를 출력하는 함수
 function checkRecommendData(y, x) {
-    // db에 있는 데이터를 가져온다.
-    fetch('/getdb')
+    fetch("midpoint", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        })
     .then(res => res.json())
-    .then(res => {
+    .then(res => {    
         // 추천리스트 초기화
         $("#recommendList *").remove();
         var mid_point = new kakao.maps.LatLng(y, x);
