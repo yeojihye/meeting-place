@@ -157,51 +157,121 @@ function markSubway() {
 var circle = new kakao.maps.Circle({
     map: map,
     center : new kakao.maps.LatLng(33.450701, 126.570667),
-    radius: 1000, // 반경 1km
+    radius: 2000, // 반경 2km
     strokeOpacity: 0, // 원 불투명도
 });
 circle.setMap(map);
 
-// db에 있는 장소들이 영역내에 있는지 확인하고, 추천리스트를 출력하는 함수
-function checkRecommendData(y, x) {
-    fetch("midpoint", {
+// db에 저장된 장소를 대학, 성별에 따라 많이 선택한 순으로 불러오는 함수
+async function getPlaceStorage(other, univ) {
+    const req = {
+        other: other, // 사용자 정보를 사용하지 않으면 1
+        univ: univ,
+    };
+    const res = await fetch("midpoint", {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
         },
-        })
-    .then(res => res.json())
-    .then(res => {    
-        // 추천리스트 초기화
-        $("#recommendList *").remove();
-        var mid_point = new kakao.maps.LatLng(y, x);
-        // 지도에 그려진 원 모두 삭제
-        circle.setMap(null);
-        // 중심좌표를 중심으로 원 그리기
-        circle.setMap(map);
-        circle.setPosition(mid_point);
-        // 원을 포함하는 최소의 사각형 영역을 구한다.
-        var midBounds = circle.getBounds();
-        // db에 있는 장소좌표가 영역 내에 있으면 리스트로 출력한다. 
-        for (var i = 0; i < res.length; i++) {
-            var dbcoord = new kakao.maps.LatLng(res[i].lat, res[i].lng);
-            if (midBounds.contain(dbcoord)) {
-                $("#recommendList").append("<li>"+res[i].place_name+"</li>");
-            }
-        };
-    });
+        body: JSON.stringify(req),
+    })
+    const data = await res.json();
+    return data;
 }
 
-function showPlacelist(y, x) {
-    checkRecommendData(y, x);
+// 장소가 중간지점 영역내에 포함되는지 확인하는 함수
+function isContained(places, y, x) {
+    var mid_point = new kakao.maps.LatLng(y, x);
+    // 지도에 그려진 원 모두 삭제
+    circle.setMap(null);
+    // 중심좌표를 중심으로 원 그리기
+    circle.setMap(map);
+    circle.setPosition(mid_point);
+    // 원을 포함하는 최소의 사각형 영역을 구한다.
+    var midBounds = circle.getBounds();
+    var data = [];
+    // db에 있는 장소좌표가 영역 내에 있는지 확인한다. 
+    for (var i = 0; i < places.length; i++) {
+        var coord = new kakao.maps.LatLng(places[i].lat, places[i].lng);
+        if (midBounds.contain(coord)) {
+            data.push(places[i]);
+        }
+    }
+    return data;
+}
+
+function recommendList(places) {
+    $("#recommendList *").remove();
+    for (var i = 0; i < places.length; i++) {
+        $("#recommendList").append("<li>" + places[i].place_name + "</li>");
+    };
+}
+
+function otherRecommendList(places) {
+    $("#otherRecommendList *").remove();
+    for (var i = 0; i < places.length; i++) {
+        $("#otherRecommendList").append("<li>" + places[i].place_name + "</li>");
+    };
+}
+
+// 주변 대학교 목록을 셀렉트 박스로 만드는 함수 
+function appendUnivOption(places) {
+    $("#nearbyUniv *").remove();
+    $("#nearbyUniv").append(`<option value = "이름없음" selected>주변 대학교</option>`)
+    for (var i = 0; i < places.length; i++) {
+        $("#nearbyUniv").append(`<option value=${places[i].name}>${places[i].name}</option>`);
+    };
+}
+
+var univs = []; // 모든 대학교의 이름, 위도, 경도를 담을 배열
+$.ajax({
+    url: '/assets/전국대학리스트.csv',
+    dataType: 'text',
+}).done((data) => {
+    var allRows = data.split(/\r?\n|\r/);
+    for (var singleRow = 1; singleRow < allRows.length; singleRow++) {
+        var rowCells = allRows[singleRow].split(',');
+
+        var nameCell = 0;
+        var latCell = 3;
+        var lngCell = 4;
+
+        var obj = {};
+        obj.lat = rowCells[latCell];
+        obj.lng = rowCells[lngCell];
+        obj.name = rowCells[nameCell];
+
+        univs.push(obj);
+    }
+});
+
+// 주변 대학교 목록을 가져오는 함수
+function getNearbyUniv(y, x, callback) {
+    const places = isContained(univs, y, x);
+    callback(places);
+}
+
+async function showPlacelist(y, x) {
+    getNearbyUniv(y, x, function (univ) {
+        appendUnivOption(univ);
+    });
+    var univName = "";
+    otherRecommendList('');
+    $("#nearbyUniv").change(async function () {
+        univName = $(this).val();
+        var data = await getPlaceStorage(1, univName);
+        otherRecommendList(isContained(data, y, x));
+    });
     // 중심좌표 변수
     mid_point = new kakao.maps.LatLng(y, x);
     // 중심좌표를 지도 중심으로 설정
-    map.setCenter(mid_point);
+    map.setCenter(mid_point);    
     // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
     searchAddrFromCoords(map.getCenter(), displayCenterInfo);
     // 음식점 장소를 검색합니다
     searchFD(); // 첫 화면
+    var data = await getPlaceStorage(0, '');
+    recommendList(isContained(data, y, x));
 }
 
 // 근처 지하철역의 위도와 경도 배열

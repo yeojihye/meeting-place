@@ -13,13 +13,13 @@ class PlaceStorage {
       });
     }
 
-    static async getRecommendData(userInfo) {
+    static async getRecommendData(univ, gender) {
       return new Promise((resolve, reject) => {
         const query = `SELECT COUNT(place_name), place_name, addr, lat, lng FROM recommend_data
                         WHERE univ = ? and gender = ?
-                        GROUP BY place_name
+                        GROUP BY place_name, addr
                         ORDER BY COUNT(place_name) DESC;`;
-        db.query(query, [userInfo.univ, userInfo.gender], (err, data) => {
+        db.query(query, [univ, gender], (err, data) => {
           if (err) reject(`${err}`);
           else {
             resolve(data);

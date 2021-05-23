@@ -3,6 +3,7 @@
 const logger = require("../../config/logger");
 const User = require("../../models/User");
 const UserStorage = require("../../models/UserStorage");
+const PlaceStorage = require("../../models/PlaceStorage");
 
 // 로그인 상태 확인
 function authIsOwner(req, res) {
@@ -39,12 +40,6 @@ const output = {
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
     res.render("home/midpoint", { is_logined: is_logined, name: req.session.name
       , univ: userInfo.univ, gender: userGender });
-  },
-
-  getdb: async (req, res) => {
-    const user = new User(req.body);
-    const recommendList = await user.genRecommendList(req.session.name);
-    res.send(recommendList);
   },
 
   logout: (req, res) => {
@@ -101,6 +96,18 @@ const process = {
 
     log(response, url);
     return res.status(url.status).json(response);
+  },
+
+  getdb: async (req, res) => {
+    const userInfo = await UserStorage.getUserInfo(req.session.name);
+    if (req.body.other) {
+      const recommendData = await PlaceStorage.getRecommendData(req.body.univ, userInfo.gender)
+      res.send(recommendData);
+    }
+    else {
+      const recommendData = await PlaceStorage.getRecommendData(userInfo.univ, userInfo.gender)
+      res.send(recommendData);
+    }
   },
 };
 
