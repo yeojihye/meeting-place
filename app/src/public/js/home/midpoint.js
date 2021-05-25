@@ -11,6 +11,8 @@ var coords_list = []; // bounds 설정에 사용될 LatLng 형식 좌표 저장
 var decimal = []; // geolocation 위도 경도 저장
 var radian = []; // radian 형식 좌표
 var cartesian = []; // cartesian 형식 좌표
+var rec = [];
+var rec_places = [];
 
 // 주소-좌표 변환 객체를 생성합니다
 var geocoder = new kakao.maps.services.Geocoder();
@@ -45,6 +47,11 @@ for (var i = 0; i < storage.length; i++) {
     coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(storage.key(i)))[0], JSON.parse(storage.getItem(storage.key(i)))[1]));
 
     count++;
+}
+
+function reset() {
+    location.href = '/';
+    storage.clear();
 }
 
 function search_mid() {
@@ -124,10 +131,9 @@ function toggle() {
 function backToMid() {
     subX = [];
     subT = [];
-    location.reload(true);
-    location.href = location.href;
-
-    history.go(0);
+    search_mid();
+    $("#subwayList *").remove();
+    $('#FD').prop('checked', true);
 }
 
 // 근처 지하철역 마다 마커 표시
@@ -156,7 +162,7 @@ function markSubway() {
 // 원 초기 설정 
 var circle = new kakao.maps.Circle({
     map: map,
-    center : new kakao.maps.LatLng(33.450701, 126.570667),
+    center: new kakao.maps.LatLng(33.450701, 126.570667),
     radius: 2000, // 반경 2km
     strokeOpacity: 0, // 원 불투명도
 });
@@ -190,7 +196,7 @@ function isContained(places, y, x) {
     // 원을 포함하는 최소의 사각형 영역을 구한다.
     var midBounds = circle.getBounds();
     var data = [];
-    // db에 있는 장소좌표가 영역 내에 있는지 확인한다. 
+    // db에 있는 장소좌표가 영역 내에 있는지 확인한다.
     for (var i = 0; i < places.length; i++) {
         var coord = new kakao.maps.LatLng(places[i].lat, places[i].lng);
         if (midBounds.contain(coord)) {
@@ -200,11 +206,23 @@ function isContained(places, y, x) {
     return data;
 }
 
-function recommendList(places) {
-    $("#recommendList *").remove();
-    for (var i = 0; i < places.length; i++) {
-        $("#recommendList").append("<li>" + places[i].place_name + "</li>");
-    };
+// 키워드 검색을 요청하는 함수입니다
+function searchPlaces(place) {
+    ps.keywordSearch(place.place_name, function (data, status, pagination) {
+        if (status === kakao.maps.services.Status.OK) {
+            for (var i = 0; i < data.length; i++) {
+                if (data[i].road_address_name === place.addr) {
+                    rec_places[place.ROWNUM] = data[i];
+                }
+            }
+            // 추천리스트 검색을 요청한다. 
+            $("#searchRC").click(function () {
+                rec_places = rec_places.filter(Boolean);
+                displayPlaces(rec_places);
+                displayPagination(pagination);
+            })
+        }
+    })
 }
 
 function otherRecommendList(places) {
@@ -214,7 +232,7 @@ function otherRecommendList(places) {
     };
 }
 
-// 주변 대학교 목록을 셀렉트 박스로 만드는 함수 
+// 주변 대학교 목록을 셀렉트 박스로 만드는 함수
 function appendUnivOption(places) {
     $("#nearbyUniv *").remove();
     $("#nearbyUniv").append(`<option value = "이름없음" selected>주변 대학교</option>`)
@@ -252,26 +270,44 @@ function getNearbyUniv(y, x, callback) {
 }
 
 async function showPlacelist(y, x) {
+    rec = [];
+    rec_places = [];
+
     getNearbyUniv(y, x, function (univ) {
         appendUnivOption(univ);
     });
     var univName = "";
     otherRecommendList('');
+
     $("#nearbyUniv").change(async function () {
         univName = $(this).val();
         var data = await getPlaceStorage(1, univName);
         otherRecommendList(isContained(data, y, x));
     });
+
     // 중심좌표 변수
     mid_point = new kakao.maps.LatLng(y, x);
     // 중심좌표를 지도 중심으로 설정
-    map.setCenter(mid_point);    
+    map.setCenter(mid_point);
     // 현재 지도 중심좌표로 주소를 검색해서 지도 좌측 상단에 표시합니다
     searchAddrFromCoords(map.getCenter(), displayCenterInfo);
     // 음식점 장소를 검색합니다
-    searchFD(); // 첫 화면
+    $('#FD').prop('checked', true);
+    searchCategory("FD6"); // 첫 화면
+
     var data = await getPlaceStorage(0, '');
-    recommendList(isContained(data, y, x));
+    rec = isContained(data, y, x);
+
+    if (rec.length > 0) {
+        for (var i = 0; i < rec.length; i++) {
+            searchPlaces(rec[i]);
+        }
+    }
+    else {
+        $("#searchRC").click(function () {
+            alert("데이터가 없습니다.");
+        })
+    }
 }
 
 // 근처 지하철역의 위도와 경도 배열
@@ -334,84 +370,33 @@ var infowindow2 = new kakao.maps.InfoWindow({
     disableAutoPan: true
 });
 
-// 음식점 코드 검색을 요청하는 함수입니다
-function searchFD() {
-    // 정렬 방식으로 거리순을 선택하였을 경우
-    if (sortby.value == "DISTANCE") {
-        ps.categorySearch('FD6', placesSearchCB, {
-            // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-            location: mid_point,
-            radius: radius.value,
-            sort: kakao.maps.services.SortBy.DISTANCE
-        });
-        return;
-    }
-    // 장소검색 객체를 통해 음식점 코드 검색을 요청합니다
-    ps.categorySearch('FD6', placesSearchCB, {
-        // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-        location: mid_point,
-        radius: radius.value,
-    });
-}
+// 선택 값을 변경할 때마다 검색
+$("input:radio[name='category']").click(function () {
+    var code = $(":input:radio[name='category']:checked").val();
+    searchCategory(code);
+})
+$('#radius').change(function () {
+    var code = $(":input:radio[name='category']:checked").val();
+    searchCategory(code);
+})
+$('#sortby').change(function () {
+    var code = $(":input:radio[name='category']:checked").val();
+    searchCategory(code);
+})
 
-// 지하철역 코드 검색을 요청하는 함수입니다
-function searchSW() {
-    // 정렬 방식으로 거리순을 선택하였을 경우
-    if (sortby.value == "DISTANCE") {
-        ps.categorySearch('SW8', placesSearchCB, {
-            // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
+// 카테고리 코드 검색을 요청하는 함수입니다
+function searchCategory(code) {
+    if (code !== "RC") {
+        var sortbyValue = kakao.maps.services.SortBy.ACCURACY;
+        if (sortby.value === "DISTANCE") {
+            sortbyValue = kakao.maps.services.SortBy.DISTANCE;
+        }
+        ps.categorySearch(code, placesSearchCB, {
             location: mid_point,
             radius: radius.value,
-            sort: kakao.maps.services.SortBy.DISTANCE
+            sort: sortbyValue,
         });
-        return;
     }
-    // 장소검색 객체를 통해 음식점 코드 검색을 요청합니다
-    ps.categorySearch('SW8', placesSearchCB, {
-        // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-        location: mid_point,
-        radius: radius.value,
-    });
-}
-
-// 문화시설 코드 검색을 요청하는 함수입니다
-function searchCT() {
-    // 정렬 방식으로 거리순을 선택하였을 경우
-    if (sortby.value == "DISTANCE") {
-        ps.categorySearch('CT1', placesSearchCB, {
-            // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-            location: mid_point,
-            radius: radius.value,
-            sort: kakao.maps.services.SortBy.DISTANCE
-        });
-        return;
-    }
-    // 장소검색 객체를 통해 음식점 코드 검색을 요청합니다
-    ps.categorySearch('CT1', placesSearchCB, {
-        // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-        location: mid_point,
-        radius: radius.value,
-    });
-}
-
-// 카페 코드 검색을 요청하는 함수입니다
-function searchCE() {
-    // 정렬 방식으로 거리순을 선택하였을 경우
-    if (sortby.value == "DISTANCE") {
-        ps.categorySearch('CE7', placesSearchCB, {
-            // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-            location: mid_point,
-            radius: radius.value,
-            sort: kakao.maps.services.SortBy.DISTANCE
-        });
-        return;
-    }
-    // 장소검색 객체를 통해 음식점 코드 검색을 요청합니다
-    ps.categorySearch('CE7', placesSearchCB, {
-        // Map 객체를 지정하지 않았으므로 좌표객체를 생성하여 넘겨준다.
-        location: mid_point,
-        radius: radius.value,
-    });
 }
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
@@ -430,14 +415,11 @@ function placesSearchCB(data, status, pagination) {
         removeMarker();
         document.getElementById('placesList').innerHTML = "<h1>검색 결과가 존재하지 않습니다.</h1><br/>";
         return;
-
-
     } else if (status === kakao.maps.services.Status.ERROR) {
         displayPagination(pagination);
         removeMarker();
         document.getElementById('placesList').innerHTML = "<h1>검색 결과 중 오류가 발생했습니다.</h1><br/>";
         return;
-
     }
 }
 // 검색 결과 목록과 마커를 표출하는 함수입니다
@@ -446,8 +428,7 @@ function displayPlaces(places) {
     var listEl = document.getElementById('placesList'),
         menuEl = document.getElementById('menu_wrap'),
         fragment = document.createDocumentFragment(),
-        bounds = new kakao.maps.LatLngBounds(),
-        listStr = '';
+        bounds = new kakao.maps.LatLngBounds();
 
     // 검색 결과 목록에 추가된 항목들을 제거합니다
     removeAllChildNods(listEl);
@@ -469,7 +450,7 @@ function displayPlaces(places) {
         // 마커와 검색결과 항목에 mouseover 했을때                   
         // 해당 장소에 인포윈도우에 장소명을 표시합니다
         // mouseout 했을 때는 인포윈도우를 닫습니다
-        (function (marker, title) {
+        (function (marker, title, addr, lat, lng) {
             kakao.maps.event.addListener(marker, 'mouseover', function () {
                 displayInfowindow(marker, title);
             });
@@ -488,9 +469,9 @@ function displayPlaces(places) {
 
             itemEl.onclick = function () {
                 map.setBounds(bounds);
-                getAddress(title, placePosition);
+                confirm_place(title, addr, lat, lng);
             }
-        })(marker, places[i].place_name);
+        })(marker, places[i].place_name, places[i].road_address_name, places[i].y, places[i].x);
 
         fragment.appendChild(itemEl);
     }
@@ -502,51 +483,40 @@ function displayPlaces(places) {
     // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
     map.setBounds(bounds);
 }
-function getAddress(title, placePosition) {
-    $.ajax({
-        method: "GET",
-        url: "https://dapi.kakao.com/v2/local/geo/coord2address",
-        data: { y: placePosition.Ma, x: placePosition.La },
-        headers: { Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5" } //REST API 키
-    })
-        .done(function (msg) {
-            var address = msg.documents[0].address;
-            confirm_place(title, placePosition, address);
-        });
-}
-function confirm_place(title, placePosition, address) {
-    if (confirm(`${title}을(를) 선택하시겠습니까?`) == true){
+
+function confirm_place(title, address, lat, lng) {
+    if (confirm(`${title}을(를) 선택하시겠습니까?`) == true) {
         const req = {
             name: title,
-            lat: placePosition.Ma,
-            lng: placePosition.La,
+            lat: lat,
+            lng: lng,
             addr: address,
         };
-                    
-    fetch("/midpoint", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(req),
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          if (res.success) {
-            // location.href = "/"; // 장소공유 및 경로안내 페이지로 이동
-          } else {
-            if (res.err) return alert(res.err);
-            alert(res.msg);
-          }
+
+        fetch("/midpoint", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(req),
         })
-        .catch((err) => {
-          console.error("장소 데이터 저장 중 에러 발생");
-        });              
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.success) {
+                    // location.href = "/"; // 장소공유 및 경로안내 페이지로 이동
+                } else {
+                    if (res.err) return alert(res.err);
+                    alert(res.msg);
+                }
+            })
+            .catch((err) => {
+                console.error("장소 데이터 저장 중 에러 발생");
+            });
     } else {
         return;
     }
-    
 }
+
 // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
 function displayPagination(pagination) {
     var paginationEl = document.getElementById('pagination'),
