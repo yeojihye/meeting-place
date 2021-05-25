@@ -23,7 +23,9 @@
       </script>
       <a href="/login">login</a>
   <% } %>
-  <ol id="recommendList"><%=univ%> <%=gender%> 기준 추천 장소<br></ol>
+  <br>
+  <select id="nearbyUniv" name="nearbyUniv"></select> 기준 추천 장소
+  <ol id="otherRecommendList"></ol> 
   <div class="map_wrap">
     <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
@@ -45,13 +47,19 @@
           </select>
         </div>
         <div>
-          <button onclick="searchFD(); return false;">음식점</button>
-          <button onclick="searchCE(); return false;">카페</button>
-          <button onclick="searchSW(); return false;">지하철역</button>
-          <button onclick="searchCT(); return false;">문화시설</button>
+          <input type="radio" name="category" id="searchRC" value="RC">
+          <label for="searchRC">추천리스트</label>
+          <input type="radio" name="category" id="FD" value="FD6" checked>
+          <label for="FD">음식점</label>
+          <input type="radio" name="category" id="CE" value="CE7">
+          <label for="CE">카페</label>
+          <input type="radio" name="category" id="SW" value="SW8">
+          <label for="SW">지하철역</label>
+          <input type="radio" name="category" id="CT" value="CT1">
+          <label for="CT">문화시설</label>
         </div>
         <div>
-          <button id="goback" onclick="location.href='/'"><img src="/assets/goback.png"></button>
+          <button id="goback" onclick="reset();"><img src="/assets/goback.png"></button>
         </div>
       </div>
       <hr>
