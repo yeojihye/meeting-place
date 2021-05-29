@@ -392,14 +392,14 @@ function reset_all() {
     result.removeChild(result.firstChild);
   }
   map.setCenter(base_loc);
-  map.setLevel(3); 
+  map.setLevel(3);
 
   //사용자 위치 출력 디브 리셋
   var cell = document.getElementById("userlist");
   while(cell.hasChildNodes())
   {
     cell.removeChild(cell.firstChild);}
-  
+
 }
 
 function goPage() {

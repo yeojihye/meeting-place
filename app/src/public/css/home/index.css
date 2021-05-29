@@ -1,3 +1,5 @@
+a {color:black; text-decoration:none}
+
 .map_wrap,
 .map_wrap * {
   margin: 0;
@@ -196,4 +198,3 @@
   font-size: 12px;
   border-radius: 5px;
 }
-

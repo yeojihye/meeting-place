@@ -18,6 +18,12 @@ const output = {
   home: (req, res) => {
     var is_logined = authIsOwner(req, res);
     logger.info(`GET / 304 "홈 화면으로 이동"`);
+    res.render("home/main", { is_logined: is_logined, name: req.session.name });
+  },
+
+  index: (req, res) => {
+    var is_logined = authIsOwner(req, res);
+    logger.info(`GET /main 304 "메인 화면으로 이동"`);
     res.render("home/index", { is_logined: is_logined, name: req.session.name });
   },
 
@@ -40,6 +46,11 @@ const output = {
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
     res.render("home/midpoint", { is_logined: is_logined, name: req.session.name
       , univ: userInfo.univ, gender: userGender });
+  },
+
+  list: (req, res) => {
+    logger.info(`GET /list 304 "약속 리스트 확인 화면으로 이동"`);
+    res.render("home/list");
   },
 
   logout: (req, res) => {
