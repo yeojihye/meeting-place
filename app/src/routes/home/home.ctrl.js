@@ -49,8 +49,10 @@ const output = {
   },
 
   list: (req, res) => {
+    var is_logined = authIsOwner(req, res);
+    // const userInfo = await UserStorage.getUserInfo(req.session.name);
     logger.info(`GET /list 304 "약속 리스트 확인 화면으로 이동"`);
-    res.render("home/list");
+    res.render("home/list", { is_logined: is_logined, name: req.session.name });
   },
 
   logout: (req, res) => {

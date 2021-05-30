@@ -5,8 +5,8 @@ const db = require("../config/db");
 class PlaceStorage {
     static async save(userInfo, userPlace) {
       return new Promise((resolve, reject) => {
-        const query = "INSERT INTO recommend_data(id, place_name, univ, gender, addr, lat, lng) VALUES(?, ?, ?, ?, ?, ?, ?);";
-        db.query(query, [userInfo.id, userPlace.name, userInfo.univ, userInfo.gender, userPlace.addr, userPlace.lat, userPlace.lng], (err) => {
+        const query = `INSERT INTO recommend_data(place_name, univ, gender, addr, lat, lng) VALUES(?, ?, ?, ?, ?, ?);`;
+        db.query(query, [userPlace.name, userInfo.univ, userInfo.gender, userPlace.addr, userPlace.lat, userPlace.lng], (err) => {
           if (err) reject(`${err}`);
           else resolve({ success: true });
         });
@@ -15,7 +15,7 @@ class PlaceStorage {
 
     static async getRecommendData(univ, gender) {
       return new Promise((resolve, reject) => {
-        const query = `SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.* 
+        const query = `SELECT @ROWNUM := @ROWNUM + 1 AS ROWNUM, A.*
                         FROM(
                           SELECT COUNT(place_name), place_name, addr, lat, lng
                           FROM recommend_data

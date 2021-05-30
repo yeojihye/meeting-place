@@ -17,6 +17,7 @@ var rec_places2 = [];
 
 // 주소-좌표 변환 객체를 생성합니다
 var geocoder = new kakao.maps.services.Geocoder();
+var starting_position = {};
 
 // 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
 var zoomControl = new kakao.maps.ZoomControl();
@@ -46,7 +47,7 @@ for (var i = 0; i < storage.length; i++) {
     });
 
     coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(storage.key(i)))[0], JSON.parse(storage.getItem(storage.key(i)))[1]));
-
+    starting_position['user'+(i+1)] = JSON.parse(storage.getItem(storage.key(i)))[0] + "," + JSON.parse(storage.getItem(storage.key(i)))[1];
     count++;
 }
 
@@ -230,11 +231,21 @@ function searchPlaces(place) {
                     rec_places[place.ROWNUM] = data[i];
                 }
             }
-            // 추천리스트 검색을 요청한다. 
-            $("#searchRC").click(function () {
-                rec_places = rec_places.filter(Boolean);
-                displayPlaces(rec_places);
-                displayPagination(pagination);
+            // 추천리스트 검색을 요청한다.
+            $("#searchRC").click(async function () {
+              univName = $("#nearbyUniv").val();
+              var data = await getPlaceStorage(1, univName);
+              rec = isContained(data, mid_point.Ma, mid_point.La);
+              if (rec.length > 0) {
+                  for (var i = 0; i < rec.length; i++) {
+                      searchPlaces2(rec[i]);
+                  }
+              }
+              else {
+                  $("#placesList").empty();
+                  $("#placesList").append("<h1>검색 결과가 존재하지 않습니다.</h1><br/>");
+                  $('#pagination').hide();
+              }
             })
         }
     })
@@ -388,6 +399,7 @@ $("#nearbyUniv").change(async function () {
     univName = $(this).val();
     var data = await getPlaceStorage(1, univName);
     rec = isContained(data, mid_point.Ma, mid_point.La);
+    console.log(rec);
     if (rec.length > 0) {
         for (var i = 0; i < rec.length; i++) {
             searchPlaces2(rec[i]);
@@ -491,7 +503,7 @@ function displayPlaces(places) {
 
             itemEl.onclick = function () {
                 map.setBounds(bounds);
-                confirm_place(title, addr, lat, lng);
+                confirm_place(title, addr, lat, lng, starting_position);
             }
         })(marker, places[i].place_name, places[i].road_address_name, places[i].y, places[i].x);
 
@@ -506,13 +518,14 @@ function displayPlaces(places) {
     map.setBounds(bounds);
 }
 
-function confirm_place(title, address, lat, lng) {
+function confirm_place(title, address, lat, lng, starting_position) {
     if (confirm(`${title}을(를) 선택하시겠습니까?`) == true) {
         const req = {
             name: title,
             lat: lat,
             lng: lng,
             addr: address,
+            starting_position: starting_position,
         };
 
         fetch("/midpoint", {
