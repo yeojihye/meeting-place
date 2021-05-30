@@ -484,7 +484,7 @@ function displayPlaces(places) {
         // 마커와 검색결과 항목에 mouseover 했을때
         // 해당 장소에 인포윈도우에 장소명을 표시합니다
         // mouseout 했을 때는 인포윈도우를 닫습니다
-        (function (marker, title, addr, lat, lng) {
+        (function (marker, title, addr, addr2, lat, lng) {
             kakao.maps.event.addListener(marker, 'mouseover', function () {
                 displayInfowindow(marker, title);
             });
@@ -503,9 +503,15 @@ function displayPlaces(places) {
 
             itemEl.onclick = function () {
                 map.setBounds(bounds);
-                confirm_place(title, addr, lat, lng, starting_position);
+                if (addr === "") {
+                  confirm_place(title, addr2, lat, lng, starting_position);
+                }
+                else {
+                  confirm_place(title, addr, lat, lng, starting_position);
+
+                }
             }
-        })(marker, places[i].place_name, places[i].road_address_name, places[i].y, places[i].x);
+        })(marker, places[i].place_name, places[i].road_address_name, places[i].address_name, places[i].y, places[i].x);
 
         fragment.appendChild(itemEl);
     }
