@@ -4,6 +4,7 @@ const logger = require("../../config/logger");
 const User = require("../../models/User");
 const UserStorage = require("../../models/UserStorage");
 const PlaceStorage = require("../../models/PlaceStorage");
+const HistoryStorage = require("../../models/HistoryStorage");
 
 // 로그인 상태 확인
 function authIsOwner(req, res) {
@@ -121,6 +122,11 @@ const process = {
       const recommendData = await PlaceStorage.getRecommendData(userInfo.univ, userInfo.gender)
       res.send(recommendData);
     }
+  },
+
+  getHistoryDb: async (req, res) => {
+    const data = await HistoryStorage.get(req.session.name);
+    res.send(data);
   },
 };
 
