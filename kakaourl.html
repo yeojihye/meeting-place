@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>미팅플레이스공유</title> <!--사진 클릭해서 공유할 수 있음 feed도 가능 하지만 공유과정에서 오류 발생 아마 도메인 문제인듯-->
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+</head>
+<body>
+    <div>
+        <a id="kakao-link-btn" href="javascript:sendLink()"><img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_medium.png" /></a>
+        <a href="javascript:shareStoryWeb()"><img src="https://developers.kakao.com/sdk/js/resources/story/icon_small.png" /></a>
+      </div>
+      <script type='text/javascript'>
+          // // 사용할 앱의 JavaScript 키 입력
+          Kakao.init('6f80a95343d5fe263bbed3564225e4a0');
+
+          Kakao.Link.createDefaultButton({
+            container: '#kakao-link-btn',
+            objectType: 'feed',
+            content: {
+              title: '미팅플레이스',
+              description: '#약속장소 #미팅플레이스',
+              imageUrl: 'https://www.google.com/search?q=%EC%95%BD%EC%86%8D%EC%9D%B4%EB%AF%B8%EC%A7%80&rlz=1C1NDCM_koKR865KR865&tbm=isch&source=iu&ictx=1&fir=OkkWYv80sJ5igM%252CmNy8BrdcUCnCrM%252C_&vet=1&usg=AI4_-kTmRQTEfGiDdQfwoI7eRFrNtsGhhg&sa=X&ved=2ahUKEwjSybX3iNbvAhU7yosBHXvcCyMQ9QF6BAgQEAE#imgrc=OkkWYv80sJ5igM',
+              link: {
+                mobileWebUrl: 'https://hufscapstone.netlify.app',
+                webUrl: 'https://hufscapstone.netlify.app'
+              }
+            },
+            buttons: [
+              {
+                title: '약속장소 보기',
+                link: {
+                  mobileWebUrl: 'https://hufscapstone.netlify.app',
+                  webUrl: 'https://hufscapstone.netlify.app'
+                }
+              },
+            ]
+          });
+        
+          function shareStoryWeb() { // 카카오 스토리 공유하기
+          Kakao.Story.share({
+            url: 'https://hufscapstone.netlify.app',
+            text: '우리들의 미팅플레이스! #약속장소 :)',
+          })
+        }
+      </script>
+</body>
+</html>
