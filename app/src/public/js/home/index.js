@@ -93,7 +93,6 @@ function placesSearchCB(data, status, pagination) {
     // 정상적으로 검색이 완료됐으면
     // 검색 목록과 마커를 표출합니다
     displayPlaces(data);
-
     // 페이지 번호를 표출합니다
     displayPagination(pagination);
 

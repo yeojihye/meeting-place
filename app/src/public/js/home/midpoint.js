@@ -417,6 +417,7 @@ async function searchCategory(code) {
     if (code !== "RC") {
         $('#sortby').show();
         $('#nearbyUniv').hide();
+        $('#pagination').show();
         var sortbyValue = kakao.maps.services.SortBy.ACCURACY;
         if (sortby.value === "DISTANCE") {
             sortbyValue = kakao.maps.services.SortBy.DISTANCE;
