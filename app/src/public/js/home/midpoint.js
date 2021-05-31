@@ -13,7 +13,6 @@ var radian = []; // radian 형식 좌표
 var cartesian = []; // cartesian 형식 좌표
 var rec = [];
 var rec_places = [];
-var rec_places2 = [];
 
 // 주소-좌표 변환 객체를 생성합니다
 var geocoder = new kakao.maps.services.Geocoder();
@@ -47,7 +46,7 @@ for (var i = 0; i < storage.length; i++) {
     });
 
     coords_list.push(new kakao.maps.LatLng(JSON.parse(storage.getItem(storage.key(i)))[0], JSON.parse(storage.getItem(storage.key(i)))[1]));
-    starting_position['user'+(i+1)] = JSON.parse(storage.getItem(storage.key(i)))[0] + "," + JSON.parse(storage.getItem(storage.key(i)))[1];
+    starting_position['user' + (i + 1)] = JSON.parse(storage.getItem(storage.key(i)))[0] + "," + JSON.parse(storage.getItem(storage.key(i)))[1];
     count++;
 }
 
@@ -207,46 +206,18 @@ function isContained(places, y, x) {
     return data;
 }
 
-function searchPlaces2(place) {
-    ps.keywordSearch(place.place_name, function (data, status, pagination) {
-        if (status === kakao.maps.services.Status.OK) {
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].road_address_name === place.addr) {
-                    rec_places2[place.ROWNUM] = data[i];
-                }
-            }
-            rec_places2 = rec_places2.filter(Boolean);
-            displayPlaces(rec_places2);
-            displayPagination(pagination);
-        }
-    })
-}
-
-// 키워드 검색을 요청하는 함수입니다
 function searchPlaces(place) {
     ps.keywordSearch(place.place_name, function (data, status, pagination) {
         if (status === kakao.maps.services.Status.OK) {
             for (var i = 0; i < data.length; i++) {
                 if (data[i].road_address_name === place.addr) {
-                    rec_places[place.ROWNUM] = data[i];
+                    rec_places.push(data[i]);
+                    break;
                 }
             }
-            // 추천리스트 검색을 요청한다.
-            $("#searchRC").click(async function () {
-              univName = $("#nearbyUniv").val();
-              var data = await getPlaceStorage(1, univName);
-              rec = isContained(data, mid_point.Ma, mid_point.La);
-              if (rec.length > 0) {
-                  for (var i = 0; i < rec.length; i++) {
-                      searchPlaces2(rec[i]);
-                  }
-              }
-              else {
-                  $("#placesList").empty();
-                  $("#placesList").append("<h1>검색 결과가 존재하지 않습니다.</h1><br/>");
-                  $('#pagination').hide();
-              }
-            })
+            rec_places = rec_places.filter(Boolean);
+            displayPlaces(rec_places);
+            displayPagination(pagination);
         }
     })
 }
@@ -288,7 +259,7 @@ function getNearbyUniv(y, x, callback) {
 }
 
 async function showPlacelist(y, x) {
-    $('#nearbyUniv').val('userUniv').prop("selected",true);
+    $('#nearbyUniv').val('userUniv').prop("selected", true);
     getNearbyUniv(y, x, function (univ) {
         appendUnivOption(univ);
     });
@@ -302,23 +273,6 @@ async function showPlacelist(y, x) {
     // 음식점 장소를 검색합니다
     $('#FD').prop('checked', true);
     searchCategory("FD6"); // 첫 화면
-
-    rec = [];
-    rec_places = [];
-    var data = await getPlaceStorage(0, '');
-    rec = isContained(data, mid_point.Ma, mid_point.La);
-    if (rec.length > 0) {
-        for (var i = 0; i < rec.length; i++) {
-            searchPlaces(rec[i]);
-        }
-    }
-    else {
-        $("#searchRC").click(function () {
-            $("#placesList").empty();
-            $("#placesList").append("<h1>검색 결과가 존재하지 않습니다.</h1><br/>");
-            $('#pagination').hide();
-        })
-    }
 }
 
 // 근처 지하철역의 위도와 경도 배열
@@ -330,8 +284,16 @@ function runAjax() {
     $.ajax({
         method: "GET",
         url: "https://dapi.kakao.com/v2/local/search/category",
-        data: { category_group_code: "SW8", y: mid_point.Ma, x: mid_point.La, radius: 10000, sort: "distance" },
-        headers: { Authorization: "KakaoAK f9808c966119f97aa91b40705cbbfe37" } //REST API 키
+        data: {
+            category_group_code: "SW8",
+            y: mid_point.Ma,
+            x: mid_point.La,
+            radius: 10000,
+            sort: "distance"
+        },
+        headers: {
+            Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5"
+        } //REST API 키
     })
         .done(function (msg) {
             for (var i = 0; i < 5; i++) { // 지하철역 최대 5개까지 출력
@@ -395,17 +357,38 @@ $('#sortby').change(function () {
     searchCategory(code);
 })
 
-$("#nearbyUniv").change(async function () {
-    univName = $(this).val();
+$('#searchRC').click(async function () {
+    $("#placesList").empty();
+    $('#pagination').empty();
+    univName = $("#nearbyUniv").val();
+    rec = [];
+    rec_places = [];
     var data = await getPlaceStorage(1, univName);
     rec = isContained(data, mid_point.Ma, mid_point.La);
-    console.log(rec);
     if (rec.length > 0) {
         for (var i = 0; i < rec.length; i++) {
-            searchPlaces2(rec[i]);
+            searchPlaces(rec[i]);
         }
+    } else {
+        $("#placesList").empty();
+        $("#placesList").append("<h1>검색 결과가 존재하지 않습니다.</h1><br/>");
+        $('#pagination').hide();
     }
-    else {
+});
+
+$("#nearbyUniv").change(async function () {
+    $("#placesList").empty();
+    $('#pagination').empty();
+    univName = $(this).val();
+    rec = [];
+    rec_places = [];
+    var data = await getPlaceStorage(1, univName);
+    rec = isContained(data, mid_point.Ma, mid_point.La);
+    if (rec.length > 0) {
+        for (var i = 0; i < rec.length; i++) {
+            searchPlaces(rec[i]);
+        }
+    } else {
         $("#placesList").empty();
         $("#placesList").append("<h1>검색 결과가 존재하지 않습니다.</h1><br/>");
         $('#pagination').hide();
@@ -427,8 +410,7 @@ async function searchCategory(code) {
             radius: radius.value,
             sort: sortbyValue,
         });
-    }
-    else {
+    } else {
         $('#sortby').hide();
         $('#nearbyUniv').show();
     }
@@ -505,10 +487,9 @@ function displayPlaces(places) {
             itemEl.onclick = function () {
                 map.setBounds(bounds);
                 if (addr === "") {
-                  confirm_place(title, addr2, lat, lng, starting_position);
-                }
-                else {
-                  confirm_place(title, addr, lat, lng, starting_position);
+                    confirm_place(title, addr2, lat, lng, starting_position);
+                } else {
+                    confirm_place(title, addr, lat, lng, starting_position);
 
                 }
             }

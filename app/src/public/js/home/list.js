@@ -1,12 +1,21 @@
-var db = [];
-fetch("list", {
+async function getHistoryDb() {
+  const res = await fetch("list", {
     method: "PUT",
     headers: {
-        "Content-Type": "application/json",
+      "Content-Type": "application/json",
     },
-})
-    .then((res) => res.json())
-    .then((data) => db = data);
+  })
+  const data = await res.json();
+  return data;
+}
+
+async function load() {
+  const db = await getHistoryDb();
+  for (var i = 0; i < db.length; i++) {
+    $('#appointment_list').append(`<li id="list${i + 1}" onclick="popUpDetail();">약속${i + 1} - ${db[i].place_name}
+    <div id="detail${i + 1}"></div></li>`);
+  }
+}
 
 function popUpDetail() {
   var detail = document.createElement('div');
@@ -27,12 +36,12 @@ function popUpDetail() {
   var map = new kakao.maps.Map(mapContainer, mapOption);
   var iwContent = '<div style="padding:5px; text-align:center;">강남역</div>'
 
-  var markerPosition  = new kakao.maps.LatLng(37.4980854357918, 127.028000275071);
+  var markerPosition = new kakao.maps.LatLng(37.4980854357918, 127.028000275071);
   var marker = new kakao.maps.Marker({
     position: markerPosition
   }),
     infowindow = new kakao.maps.InfoWindow({
-      position : markerPosition,
+      position: markerPosition,
       content: iwContent,
       zIndex: 1,
       disableAutoPan: true
@@ -51,7 +60,7 @@ function popUpDetail() {
   var users = document.createElement('div');
 
   users.setAttribute("id", "users");
-  users.innerHTML = "user1 : 경기도 성남시 분당구 미금로 114 <input type='button' value='경로 안내' onclick='location.href=nav' />" ;
+  users.innerHTML = "user1 : 경기도 성남시 분당구 미금로 114 <input type='button' value='경로 안내' onclick='location.href=nav' />";
 
   document.getElementById('appointment_list').appendChild(users);
 }
