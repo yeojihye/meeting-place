@@ -13,6 +13,9 @@
 </head>
 
 <body onload="search_mid();">
+  <header>
+    <a href="/" id="logo"><h1>UNIV_MEETING_PLACE</h1></a>
+  </header>
   <%=name%>
   <% if (is_logined) {%>
       | <a href="/logout">logout</a>
@@ -23,9 +26,6 @@
       </script>
       <a href="/login">login</a>
   <% } %>
-  <br>
-  <select id="nearbyUniv" name="nearbyUniv"></select> 기준 추천 장소
-  <ol id="otherRecommendList"></ol> 
   <div class="map_wrap">
     <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
     <div id="menu_wrap" class="bg_white">
@@ -66,6 +66,9 @@
       <select id="sortby" name="sortby">
         <option value=ACCURACY selected>정확도순</option>
         <option value=DISTANCE>거리순</option>
+      </select>
+      <select id="nearbyUniv" name="nearbyUniv">
+        <option value="userUniv" selected><%=univ%></option>
       </select>
       <ul id="placesList"></ul>
       <div id="pagination"></div>

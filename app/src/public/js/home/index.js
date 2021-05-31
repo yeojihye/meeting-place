@@ -93,7 +93,6 @@ function placesSearchCB(data, status, pagination) {
     // 정상적으로 검색이 완료됐으면
     // 검색 목록과 마커를 표출합니다
     displayPlaces(data);
-
     // 페이지 번호를 표출합니다
     displayPagination(pagination);
 
@@ -392,14 +391,14 @@ function reset_all() {
     result.removeChild(result.firstChild);
   }
   map.setCenter(base_loc);
-  map.setLevel(3); 
+  map.setLevel(3);
 
   //사용자 위치 출력 디브 리셋
   var cell = document.getElementById("userlist");
   while(cell.hasChildNodes())
   {
     cell.removeChild(cell.firstChild);}
-  
+
 }
 
 function goPage() {

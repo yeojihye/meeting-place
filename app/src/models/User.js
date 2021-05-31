@@ -2,6 +2,7 @@
 
 const UserStorage = require("./UserStorage");
 const PlaceStorage = require("./PlaceStorage");
+const HistoryStorage = require("./HistoryStorage");
 const crypto = require('crypto');
 
 class User {
@@ -37,8 +38,8 @@ class User {
   }
 
   async register() {
-    const client = this.body;    
-    client.salt = crypto.randomBytes(64).toString('base64');  
+    const client = this.body;
+    client.salt = crypto.randomBytes(64).toString('base64');
 
     try {
       client.psword = await User.hashPsword(client, client.salt);
@@ -52,10 +53,13 @@ class User {
   async confirm_place(id) {
     const place = this.body;
     const user = await UserStorage.getUserInfo(id);
-
+    var obj = JSON.stringify(place.starting_position);
     try {
-      const response = await PlaceStorage.save(user, place);
-      return response;
+      const response1 = await PlaceStorage.save(user, place);
+      const response2 = await HistoryStorage.save(user, place, obj);
+      if (response1.success && response2.success){
+        return { success: true };
+      }
     } catch (err) {
       return { success: false, err };
     }

@@ -12,47 +12,52 @@
 </head>
 
 <body onload="current_position();">
-    <div id="test"></div>
-    <%=name%>
-    <% if (is_logined) {%>
-        | <a href="/logout">logout</a>
-    <% } else { %>
-        <a href="/login">login</a>
-    <% } %>
-    <div class="map_wrap">
-        <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;display:inline-block;"></div>
-        <div id="menu_wrap" class="bg_white" style="width:280px;height:470px;">
-            <div class="option">
-                <div>
-                    <form onsubmit="searchPlaces(); return false;">
-                        출발 위치 : <input type="text" value="" id="keyword" size="20"/>
-                        <% if (!is_logined) {%>
-                            <script>
-                                $("#keyword").click(function() {
-                                    alert("로그인 후 이용해 주십시오.");
-                                    location.href="login";
-                                });
-                            </script>
-                        <% } %>
-                        <button type="submit">검색</button><br>
-                        <input type="button" value="초기화" onclick="reset_all();" />
-                        <input type="button" value="사용자 추가" onclick="add_user();" />
-                        <input type="button" value="중간지점 검색" onclick="goPage();" />
-                    </form>
-                </div>
-            </div>
-            <hr>
-            <ul id="placesList"></ul>
-            <div id="pagination"></div>
+  <header>
+    <a href="/" id="logo">
+      <h1>UNIV_MEETING_PLACE</h1>
+    </a>
+  </header>
+  <div id="test"></div>
+  <%=name%>
+  <% if (is_logined) {%>
+  | <a href="/logout">logout</a>
+  <% } else { %>
+  <a href="/login">login</a>
+  <% } %>
+  <div class="map_wrap">
+    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;display:inline-block;"></div>
+    <div id="menu_wrap" class="bg_white" style="width:280px;height:470px;">
+      <div class="option">
+        <div>
+          <form onsubmit="searchPlaces(); return false;">
+            출발 위치 : <input type="text" value="" id="keyword" size="20" />
+            <% if (!is_logined) {%>
+            <script>
+              $("#keyword").click(function() {
+                alert("로그인 후 이용해 주십시오.");
+                location.href = "login";
+              });
+            </script>
+            <% } %>
+            <button type="submit">검색</button><br>
+            <input type="button" value="초기화" onclick="reset_all();" />
+            <input type="button" value="사용자 추가" onclick="add_user();" />
+            <input type="button" value="중간지점 검색" onclick="goPage();" />
+          </form>
         </div>
-        <div id="user_list" style="height:auto; width:18%; min-height:80px;">
-            <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
-            <ul id="userlist"></ul>
-        </div>
+      </div>
+      <hr>
+      <ul id="placesList"></ul>
+      <div id="pagination"></div>
     </div>
+    <div id="user_list" style="height:auto; width:18%; min-height:80px;">
+      <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
+      <ul id="userlist"></ul>
     </div>
-    <p id="result"></p>
-    <div id="field"></div>
+  </div>
+  </div>
+  <p id="result"></p>
+  <div id="field"></div>
 </body>
 
 </html>
