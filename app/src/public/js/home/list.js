@@ -77,18 +77,21 @@ async function popUpDetail(list) {
     var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
     var callback = function coord2AddressCallback(result, status) {
       if (status === kakao.maps.services.Status.OK) {
-        users.innerHTML += "user" + userNum + ": " + result[0].address.address_name
-          + "&nbsp; <input type='button' value='경로 안내' onclick='location.href=nav' /><br>";
+        users.innerHTML += "user" + userCnt + ": ";
+
+        if (result[0].road_address == null) {
+          users.innerHTML += result[0].address.address_name;
+        } else {
+          users.innerHTML += result[0].road_address.address_name;
+        }
+
+        users.innerHTML += "&nbsp; <input type='button' value='경로 안내' onclick='location.href=nav' /><br>";
         userCnt++;
       }
     }
 
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
   }
-
-  // for (var i = 1; i <= (((db[parseInt(list.id.substring(4) - 1)].starting_position).split(",")).length) / 2; i++) {
-  //   users.innerHTML += "user" + i + "&nbsp; <input type='button' value='경로 안내' onclick='location.href=nav' /><br>";
-  // }
 
   document.getElementById(list.id).appendChild(users);
 }
