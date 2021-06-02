@@ -16,17 +16,27 @@ async function load() {
   const db = await getHistoryDb();
   for (var i = 0; i < db.length; i++) {
     $('#appointment_list').append(`<li id="list${i + 1}">약속${i + 1} - ${db[i].place_name}, ${db[i].addr}
-    <input type="button" value="상세 정보" onclick="popUpDetail(list${i + 1});" />
-    <div id="detail${i + 1}"></div></li><br>`);
+    <input type="button" value="상세 정보" onclick="popUpDetail(${i + 1});"</li>`);
   }
 }
 
-async function popUpDetail(list) {
-  const db = await getHistoryDb();
-  var index = parseInt(list.id.substring(4) - 1);
+async function popUpDetail(listOrder) {
+  // var button = document.getElementById(`detail${listOrder}`);
+  // if (button.style.display == 'none') {
+  //     button.style.display = 'block';
+  // } else {
+  //     button.style.display = 'none';
+  // }
 
-  list.innerHTML += '<div id="' + list.id + '_map" style="width:300px; height:300px; position:relative; overflow:hidden; display:inline-block;"></div>';
-  var mapContainer = document.getElementById(list.id + '_map'), // 지도를 표시할 div
+  const db = await getHistoryDb();
+  var index = listOrder - 1;
+
+  var detail = document.createElement('div');
+  detail.setAttribute("id", `detail${listOrder}`);
+  document.getElementById(`list${listOrder}`).appendChild(detail);  
+
+  detail.innerHTML += '<div id="' + detail.id + '_map" style="width:300px; height:300px; position:relative; overflow:hidden; display:inline-block;"></div>';
+  var mapContainer = document.getElementById(detail.id + '_map'), // 지도를 표시할 div
     mapOption = {
       center: new kakao.maps.LatLng(db[index].lat, db[index].lng), // 지도의 중심좌표
       draggable: false,
@@ -56,15 +66,15 @@ async function popUpDetail(list) {
   addr.setAttribute("id", "addr");
   addr.innerHTML = db[index].addr;
 
-  document.getElementById(list.id).appendChild(addr);
+  document.getElementById(detail.id).appendChild(addr);
 
   var users = document.createElement('div');
 
   users.setAttribute("id", "users");
 
-  var starting_position = JSON.parse(db[index].starting_position); // {user1: 37, 127, user2: 37, 127}
-  var starting_lat = {}; // {user1: "37", user2: "37"}
-  var starting_lng = {}; // {user1: "127", user2: "127"}
+  var starting_position = JSON.parse(db[index].starting_position);
+  var starting_lat = {};
+  var starting_lng = {};
   var userCnt = 1;
 
   for (var i in starting_position) {
@@ -93,5 +103,5 @@ async function popUpDetail(list) {
     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
   }
 
-  document.getElementById(list.id).appendChild(users);
+  document.getElementById(detail.id).appendChild(users);
 }
