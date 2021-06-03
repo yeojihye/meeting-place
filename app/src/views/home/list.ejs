@@ -9,7 +9,7 @@
   <script src="/js/home/list.js" defer></script>
 </head>
 
-<body>
+<body onload="load();">
   <header>
     <a href="/" id="logo">
       <h1>UNIV_MEETING_PLACE</h1>
@@ -29,9 +29,6 @@
   <div>
     <%=name%>님의 약속 리스트
     <ol id="appointment_list">
-      <li id="list1" onclick="popUpDetail();">약속1 - 강남역
-       <div id="detail1"></div>
-      </li>
     </ol>
   </div>
 </body>
