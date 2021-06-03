@@ -20,9 +20,9 @@
       </h1>
       <p id="dynamic" class="lg-text"></p>
     </div>
-    <a class="mainpage-button button1" href="/login">로그인</a>
-    <a class="mainpage-button button2"  onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>새로운 약속</a>
-    <a class="mainpage-button button3"  onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</a>
+    <button type="button" class="mainpage-button button1"  onclick="login();">로그인</button>
+    <button type="button" class="mainpage-button button2"  onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>새로운 약속</button>
+    <button type="button" class="mainpage-button button3"  onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</button>
     
   </div>
   <!--<button type="button" name="start" onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>약속 생성</button>

@@ -357,7 +357,7 @@ function add_user() {
     var adduser = document.createElement('div');
 
     adduser.setAttribute("id", "div_"+user_num);
-    adduser.innerHTML ="<img src='/assets/person.png'>사용자" + user_num + " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
+    adduser.innerHTML ="<img src='/assets/person.png'>사용자" +  " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
     adduser.style.borderBottom = "1px solid #2e6076";
     //클릭시 사용자 삭제
     adduser.addEventListener("click",
