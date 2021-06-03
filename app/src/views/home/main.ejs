@@ -4,18 +4,29 @@
 <head>
   <meta charset="utf-8">
   <title>UNIV_MEETING_PLACE</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="/css/home/main.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
   <script type="text/javascript"></script>
   <script src="/js/home/main.js" defer></script>
 </head>
 
 <body>
-  <header>
-    <a href="/" id="logo"><h1>UNIV_MEETING_PLACE</h1></a>
-  </header>
-  <button type="button" name="start" onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>약속 생성</button>
-  <button type="button" name="list" onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</button>
+  <div class="Mainpage">
+    <div id="wrap">
+      <h1>
+        <span class="material-icons">travel_explore</span>
+      </h1>
+      <p id="dynamic" class="lg-text"></p>
+    </div>
+    <% if (is_logined) {%>
+    <a class="mainpage-button button1" href="/logout">로그아웃</a><% } else { %>
+    <a class="mainpage-button button1" href="/login">로그인</a><% } %>
+    <a class="mainpage-button button2" onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>새로운 약속</a>
+    <a class="mainpage-button button3" onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</a>  </div>
+  <!--<button type="button" name="start" onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>약속 생성</button>
+  <button type="button" name="list" onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</button>-->
 </body>
 
 </html>

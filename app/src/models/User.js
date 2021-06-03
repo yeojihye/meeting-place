@@ -57,7 +57,7 @@ class User {
     try {
       const response1 = await PlaceStorage.save(user, place);
       const response2 = await HistoryStorage.save(user, place, obj);
-      if (response1.success && response2.success){
+      if (response1.success && response2.success) {
         return { success: true };
       }
     } catch (err) {
