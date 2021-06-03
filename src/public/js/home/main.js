@@ -10,14 +10,16 @@ function info() {
   alert("로그인 후 이용해 주십시오.");
   location.href = "login";
 }
-
+function login() {
+  location.href = "login";
+}
 /*--------------------------------------------------------------
 # Mainpage 깜박이는 효과 
 --------------------------------------------------------------*/
 let target= document.querySelector("#dynamic");
 
 function randomString(){
-  let stringArr = ["Meeting Place Univ", "데이터로 확인하는 추천 장소", "미팅 플레이스로 미팅하다"];
+  let stringArr = ["Univ Meeting Place", "데이터로 확인하는 ", "미팅 플레이스로 미팅하다"];
   let selectString = stringArr[Math.floor (Math.random()*stringArr.length)];
   let selectStringArr=selectString.split(""); /*하나하나 쪼개져서 배열로 변환*/
 
