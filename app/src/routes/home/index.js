@@ -11,7 +11,6 @@ router.get("/register", ctrl.output.register);
 router.get("/midpoint", ctrl.output.midpoint);
 router.get("/main", ctrl.output.home);
 router.get("/list", ctrl.output.list);
-router.get("/nav", ctrl.output.nav);
 router.get("/index", ctrl.output.index);
 
 router.post("/login", ctrl.process.login);

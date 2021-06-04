@@ -1,6 +1,6 @@
 var mapCount = 1;
 var geocoder = new kakao.maps.services.Geocoder();
-// var storage = window.sessionStorage; // 세션 스토리지
+Kakao.init('3c8cb66006a235d48fe9fd48b319d1f7');
 
 async function getHistoryDb() {
   const res = await fetch("list", {
@@ -16,9 +16,7 @@ async function getHistoryDb() {
 async function load() {
   const db = await getHistoryDb();
   for (var i = 0; i < db.length; i++) {
-    $('#appointment_list').append(`<li id="list${i + 1}" class="list_title" onclick="popUpDetail(${i+1})">${db[i].place_name}
-    <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/link/to/${db[i].place_name},${db[i].lat},${db[i].lng}'"/></li>
-    <div id="div${i+1}"></div><br><br>`);
+    $('#appointment_list').append(`<li id="list${i + 1}" class="list_title" onclick="popUpDetail(${i + 1})">${db[i].place_name}</li><div id="div${i + 1}"></div><br>`);
   }
 }
 
@@ -70,8 +68,8 @@ async function popUpDetail(listOrder) {
 
     var markerPosition = new kakao.maps.LatLng(db[index].lat, db[index].lng);
     var marker = new kakao.maps.Marker({
-        position: markerPosition
-      }),
+      position: markerPosition
+    }),
       infowindow = new kakao.maps.InfoWindow({
         position: markerPosition,
         content: iwContent,
@@ -86,6 +84,8 @@ async function popUpDetail(listOrder) {
 
     addr.setAttribute("id", "addr");
     addr.innerHTML = "<br>주소 : " + db[index].addr;
+    addr.innerHTML += `<a id="create-kakao-link-btn${index}" href="javascript:;">
+    <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a>`
 
     document.getElementById(detail.id).appendChild(addr);
 
@@ -103,7 +103,7 @@ async function popUpDetail(listOrder) {
       starting_lat[i] = coord[0];
       starting_lng[i] = coord[1];
     };
-    // storage.clear(); // 세션 스토리지 초기화
+
     for (var i in starting_lat) {
       var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
       var callback = function coord2AddressCallback(result, status) {
@@ -112,13 +112,13 @@ async function popUpDetail(listOrder) {
 
           if (result[0].road_address == null) {
             users.innerHTML += result[0].address.address_name;
+            var user_addr = result[0].address.address_name;
           } else {
             users.innerHTML += result[0].road_address.address_name;
+            var user_addr = result[0].road_address.address_name;
           }
 
-          // sessionStorage.setItem("starting_lat", starting_lat[i]);
-          // sessionStorage.setItem("starting_lng", starting_lng[i]);
-          // users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='/nav'" /><br>`;
+          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';" /><br>`;
           userCnt++;
         }
       }
@@ -132,5 +132,24 @@ async function popUpDetail(listOrder) {
 
     document.getElementById(detail.id).appendChild(users);
     document.getElementById(detail.id).appendChild(deleteButton);
+    createLink(db[index].place_name, index);
   }
+}
+
+function createLink(place_name, i) {
+  Kakao.Link.createDefaultButton({
+    container: `#create-kakao-link-btn${i}`,
+    objectType: 'location',
+    address: place_name,
+    content: {
+      title: '미팅플레이스',
+      description: '#약속장소 #미팅플레이스',
+      imageUrl:
+        '',
+      link: {
+        mobileWebUrl: 'https://jihye-test.heroku.com',
+        webUrl: 'https://jihye-test.heroku.com',
+      },
+    },
+  })
 }

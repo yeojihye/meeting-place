@@ -63,6 +63,11 @@ body{
     border-bottom: 5px solid #8ba2aa;
 
 }
+
+.mainpage-button:hover {
+  cursor: pointer;
+}
+
 .mainpage-button:active{
     transform: translateY(3px);
     border-bottom: 2px solid #8ba2aa;

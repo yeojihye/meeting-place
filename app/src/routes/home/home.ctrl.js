@@ -65,12 +65,6 @@ const output = {
     res.render("home/list", { is_logined: is_logined, name: req.session.name });
   },
 
-  nav: (req, res) => {
-    var is_logined = authIsOwner(req, res);
-    logger.info(`GET /list 304 "경로 안내 화면으로 이동"`);
-    res.render("home/nav", { is_logined: is_logined, name: req.session.name });
-  },
-
   logout: (req, res) => {
     req.session.destroy(function (err) {
       res.redirect('/');
@@ -142,7 +136,7 @@ const process = {
     const data = await HistoryStorage.remove(req.body.cnt);
     res.send(data);
   },
-}
+};
 
 module.exports = {
   output,
