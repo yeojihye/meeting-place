@@ -84,8 +84,8 @@ async function popUpDetail(listOrder) {
 
     addr.setAttribute("id", "addr");
     addr.innerHTML = "<br>주소 : " + db[index].addr;
-    addr.innerHTML += `<a id="create-kakao-link-btn${index}" href="javascript:;">
-    <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a>`
+    // addr.innerHTML += `<a id="create-kakao-link-btn${index}" href="javascript:;">
+    // <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a>`
 
     document.getElementById(detail.id).appendChild(addr);
 
@@ -118,7 +118,12 @@ async function popUpDetail(listOrder) {
             var user_addr = result[0].road_address.address_name;
           }
 
-          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';" /><br>`;
+          var mapUrl = `https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}`;
+          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/>
+          <a id="create-kakao-link-btn${index}" href="javascript:;">
+          <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a><br>`;
+          
+          createLink(db[index], index, mapUrl);
           userCnt++;
         }
       }
@@ -132,11 +137,11 @@ async function popUpDetail(listOrder) {
 
     document.getElementById(detail.id).appendChild(users);
     document.getElementById(detail.id).appendChild(deleteButton);
-    createLink(db[index], index);
+    // createLink(db[index], index);
   }
 }
 
-function createLink(db, i) {
+function createLink(db, i, mapUrl) {
   Kakao.Link.createDefaultButton({
     container: `#create-kakao-link-btn${i}`,
     objectType: 'location',
@@ -145,10 +150,10 @@ function createLink(db, i) {
       title: db.place_name,
       description: db.addr,
       imageUrl:
-        '',
+        'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
       link: {
-        mobileWebUrl: 'https://jihye-test.heroku.com',
-        webUrl: 'https://jihye-test.heroku.com',
+        mobileWebUrl: mapUrl,
+        webUrl: mapUrl,
       },
     },
   })
