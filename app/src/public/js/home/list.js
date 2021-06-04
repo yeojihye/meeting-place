@@ -132,18 +132,18 @@ async function popUpDetail(listOrder) {
 
     document.getElementById(detail.id).appendChild(users);
     document.getElementById(detail.id).appendChild(deleteButton);
-    createLink(db[index].place_name, index);
+    createLink(db[index], index);
   }
 }
 
-function createLink(place_name, i) {
+function createLink(db, i) {
   Kakao.Link.createDefaultButton({
     container: `#create-kakao-link-btn${i}`,
     objectType: 'location',
-    address: place_name,
+    address: db.addr,
     content: {
-      title: '미팅플레이스',
-      description: '#약속장소 #미팅플레이스',
+      title: db.place_name,
+      description: db.addr,
       imageUrl:
         '',
       link: {
