@@ -138,8 +138,7 @@ async function popUpDetail(listOrder) {
   }
 }
 
-function createLink(db, i, url) {
-  console.log(url);
+function createLink(db, i, mapUrl) {
   Kakao.Link.createDefaultButton({
     container: `#create-kakao-link-btn${i}`,
     objectType: 'location',
@@ -150,8 +149,8 @@ function createLink(db, i, url) {
       imageUrl:
         'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
       link: {
-        mobileWebUrl: "url",
-        webUrl: "url",
+        mobileWebUrl: mapUrl,
+        webUrl: mapUrl,
       },
     },
   })
