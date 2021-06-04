@@ -1,5 +1,6 @@
 var mapCount = 1;
 var geocoder = new kakao.maps.services.Geocoder();
+// var storage = window.sessionStorage; // 세션 스토리지
 
 async function getHistoryDb() {
   const res = await fetch("list", {
@@ -15,8 +16,29 @@ async function getHistoryDb() {
 async function load() {
   const db = await getHistoryDb();
   for (var i = 0; i < db.length; i++) {
-    $('#appointment_list').append(`<li id="list${i + 1}">${db[i].place_name}
-    <input type="button" value="상세 정보" onclick="popUpDetail(${i + 1});"</li>`);
+    $('#appointment_list').append(`<li id="list${i + 1}" class="list_title" onclick="popUpDetail(${i+1})">${db[i].place_name}
+    <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/link/to/${db[i].place_name},${db[i].lat},${db[i].lng}'"/></li>
+    <div id="div${i+1}"></div><br><br>`);
+  }
+}
+
+async function removePlace(cnt) {
+  if (confirm(`약속을 삭제하시겠습니까?`) == true) {
+    const req = {
+      cnt: cnt,
+    };
+    const res = await fetch("list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req),
+    })
+    const data = await res.json();
+    location.reload();
+    return data;
+  } else {
+    return;
   }
 }
 
@@ -25,17 +47,16 @@ async function popUpDetail(listOrder) {
 
   if (detailDiv) {
     detailDiv.remove();
-  }
-
-  else {
+  } else {
     const db = await getHistoryDb();
     var index = listOrder - 1;
+    var cnt = db[index].cnt;
 
     var detail = document.createElement('div');
     detail.setAttribute("id", `detail${listOrder}`);
-    document.getElementById(`list${listOrder}`).appendChild(detail);
+    document.getElementById(`div${listOrder}`).appendChild(detail);
 
-    detail.innerHTML += '<div id="' + detail.id + '_map" style="width:300px; height:300px; position:relative; overflow:hidden; display:inline-block;"></div>';
+    detail.innerHTML += '<br><div id="' + detail.id + '_map" style="width:300px; height:300px; position:relative; overflow:hidden; display:inline-block;"></div>';
     var mapContainer = document.getElementById(detail.id + '_map'), // 지도를 표시할 div
       mapOption = {
         center: new kakao.maps.LatLng(db[index].lat, db[index].lng), // 지도의 중심좌표
@@ -49,8 +70,8 @@ async function popUpDetail(listOrder) {
 
     var markerPosition = new kakao.maps.LatLng(db[index].lat, db[index].lng);
     var marker = new kakao.maps.Marker({
-      position: markerPosition
-    }),
+        position: markerPosition
+      }),
       infowindow = new kakao.maps.InfoWindow({
         position: markerPosition,
         content: iwContent,
@@ -64,7 +85,7 @@ async function popUpDetail(listOrder) {
     var addr = document.createElement('div');
 
     addr.setAttribute("id", "addr");
-    addr.innerHTML = db[index].addr;
+    addr.innerHTML = "<br>주소 : " + db[index].addr;
 
     document.getElementById(detail.id).appendChild(addr);
 
@@ -82,12 +103,12 @@ async function popUpDetail(listOrder) {
       starting_lat[i] = coord[0];
       starting_lng[i] = coord[1];
     };
-
+    // storage.clear(); // 세션 스토리지 초기화
     for (var i in starting_lat) {
       var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
       var callback = function coord2AddressCallback(result, status) {
         if (status === kakao.maps.services.Status.OK) {
-          users.innerHTML += "user" + userCnt + ": ";
+          users.innerHTML += "<br>user" + userCnt + ": ";
 
           if (result[0].road_address == null) {
             users.innerHTML += result[0].address.address_name;
@@ -95,7 +116,9 @@ async function popUpDetail(listOrder) {
             users.innerHTML += result[0].road_address.address_name;
           }
 
-          users.innerHTML += "&nbsp; <input type='button' value='경로 안내' onclick='location.href=nav' /><br>";
+          // sessionStorage.setItem("starting_lat", starting_lat[i]);
+          // sessionStorage.setItem("starting_lng", starting_lng[i]);
+          // users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='/nav'" /><br>`;
           userCnt++;
         }
       }
@@ -103,6 +126,11 @@ async function popUpDetail(listOrder) {
       geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
     }
 
+    var deleteButton = document.createElement('div');
+    deleteButton.setAttribute("id", "deleteButton");
+    deleteButton.innerHTML += `<br><input type='button' value='약속 삭제' onclick='removePlace(${cnt})'/>`;
+
     document.getElementById(detail.id).appendChild(users);
+    document.getElementById(detail.id).appendChild(deleteButton);
   }
 }
