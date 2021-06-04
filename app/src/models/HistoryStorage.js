@@ -9,7 +9,9 @@ class HistoryStorage {
       VALUES(?, ?, ?, ?, ?, ?);`;
       db.query(query, [userInfo.id, userPlace.name, userPlace.addr, userPlace.lat, userPlace.lng, starting_position], (err) => {
         if (err) reject(`${err}`);
-        else resolve({ success: true });
+        else resolve({
+          success: true
+        });
       });
     });
   }
@@ -25,6 +27,19 @@ class HistoryStorage {
       });
     });
   }
+
+  static async remove(cnt) {
+    return new Promise((resolve, reject) => {
+      const query = `DELETE FROM places_visited WHERE cnt = ?;`;
+      console.log(query);
+      db.query(query, [cnt], (err, data) => {
+        if (err) reject(`${err}`);
+        else {
+          resolve(data);
+        }
+      });
+    });
+  }
 }
 
-module.exports = HistoryStorage;
+  module.exports = HistoryStorage;

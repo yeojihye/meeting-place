@@ -1,5 +1,6 @@
 var mapCount = 1;
 var geocoder = new kakao.maps.services.Geocoder();
+Kakao.init('e9d8f9201243f52c8d02c32d7b21e488');
 
 async function getHistoryDb() {
   const res = await fetch("list", {
@@ -15,8 +16,27 @@ async function getHistoryDb() {
 async function load() {
   const db = await getHistoryDb();
   for (var i = 0; i < db.length; i++) {
-    $('#appointment_list').append(`<li id="list${i + 1}">약속${i + 1} - ${db[i].place_name}, ${db[i].addr}
-    <input type="button" value="상세 정보" onclick="popUpDetail(${i + 1});">  <input type="button" value="약속 취소" onclick="removePlace(${db[i].cnt});"></li><br>`);
+    $('#appointment_list').append(`<li id="list${i + 1}" class="list_title" onclick="popUpDetail(${i + 1})">${db[i].place_name}</li><div id="div${i + 1}"></div><br>`);
+  }
+}
+
+async function removePlace(cnt) {
+  if (confirm(`약속을 삭제하시겠습니까?`) == true) {
+    const req = {
+      cnt: cnt,
+    };
+    const res = await fetch("list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(req),
+    })
+    const data = await res.json();
+    location.reload();
+    return data;
+  } else {
+    return;
   }
 }
 
@@ -25,15 +45,14 @@ async function popUpDetail(listOrder) {
 
   if (detailDiv) {
     detailDiv.remove();
-  }
-
-  else {
+  } else {
     const db = await getHistoryDb();
     var index = listOrder - 1;
+    var cnt = db[index].cnt;
 
     var detail = document.createElement('div');
     detail.setAttribute("id", `detail${listOrder}`);
-    document.getElementById(`list${listOrder}`).appendChild(detail);
+    document.getElementById(`div${listOrder}`).appendChild(detail);
 
     detail.innerHTML += '<br><div id="' + detail.id + '_map" style="width:300px; height:300px; position:relative; overflow:hidden; display:inline-block;"></div>';
     var mapContainer = document.getElementById(detail.id + '_map'), // 지도를 표시할 div
@@ -64,7 +83,7 @@ async function popUpDetail(listOrder) {
     var addr = document.createElement('div');
 
     addr.setAttribute("id", "addr");
-    addr.innerHTML = "<br>약속 장소 주소 : " + db[index].addr;
+    addr.innerHTML = "<br>주소 : " + db[index].addr;
 
     document.getElementById(detail.id).appendChild(addr);
 
@@ -87,15 +106,22 @@ async function popUpDetail(listOrder) {
       var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
       var callback = function coord2AddressCallback(result, status) {
         if (status === kakao.maps.services.Status.OK) {
-          users.innerHTML += "user" + userCnt + ": ";
+          users.innerHTML += "<br>user" + userCnt + ": ";
 
           if (result[0].road_address == null) {
             users.innerHTML += result[0].address.address_name;
+            var user_addr = result[0].address.address_name;
           } else {
             users.innerHTML += result[0].road_address.address_name;
+            var user_addr = result[0].road_address.address_name;
           }
 
-          users.innerHTML += "&nbsp; <input type='button' value='경로 안내' onclick=location.href='nav' /><br>";
+          var mapUrl = `https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}`;
+          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/>
+          <a id="create-kakao-link-btn${index}" href="javascript:;">
+          <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a><br>`;
+          
+          createLink(db[index], index, mapUrl);
           userCnt++;
         }
       }
@@ -103,6 +129,30 @@ async function popUpDetail(listOrder) {
       geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
     }
 
+    var deleteButton = document.createElement('div');
+    deleteButton.setAttribute("id", "deleteButton");
+    deleteButton.innerHTML += `<br><input type='button' value='약속 삭제' onclick='removePlace(${cnt})'/>`;
+
     document.getElementById(detail.id).appendChild(users);
+    document.getElementById(detail.id).appendChild(deleteButton);
   }
+}
+
+function createLink(db, i, url) {
+  console.log(url);
+  Kakao.Link.createDefaultButton({
+    container: `#create-kakao-link-btn${i}`,
+    objectType: 'location',
+    address: db.addr,
+    content: {
+      title: db.place_name,
+      description: db.addr,
+      imageUrl:
+        'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
+      link: {
+        mobileWebUrl: "url",
+        webUrl: "url",
+      },
+    },
+  })
 }
