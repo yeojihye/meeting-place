@@ -97,19 +97,20 @@ async function popUpDetail(listOrder) {
     var starting_lat = {};
     var starting_lng = {};
     var userCnt = 1;
-
+    
     for (var i in starting_position) {
       var coord = starting_position[i].split(',');
       starting_lat[i] = coord[0];
       starting_lng[i] = coord[1];
     };
-
-    for (var i in starting_lat) {
+    
+    for (var i in starting_lat) { 
       var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
       var callback = function coord2AddressCallback(result, status) {
-        if (status === kakao.maps.services.Status.OK) {
-          users.innerHTML += "<br>user" + userCnt + ": ";
 
+        if (status === kakao.maps.services.Status.OK) {
+          users.innerHTML += "<br><div id='userbar'>user" + userCnt ;
+          
           if (result[0].road_address == null) {
             users.innerHTML += result[0].address.address_name;
             var user_addr = result[0].address.address_name;
@@ -117,12 +118,11 @@ async function popUpDetail(listOrder) {
             users.innerHTML += result[0].road_address.address_name;
             var user_addr = result[0].road_address.address_name;
           }
-
+         
           var mapUrl = `https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}`;
-          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/>
-          <a id="create-kakao-link-btn${index}" href="javascript:;">
-          <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a><br>`;
-          
+        
+          users.innerHTML += "<br>"+` &nbsp; <input  type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/><a id="create-kakao-link-btn${index}" href="javascript:;">
+          <img class='kakao' src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" /align="middle"></a><hr>`;
           createLink(db[index], index, mapUrl);
           userCnt++;
         }

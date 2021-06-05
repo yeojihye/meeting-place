@@ -1,13 +1,15 @@
 a {color:black; text-decoration:none}
 
 div #logo{
+    position: relative;
     text-align: center;
     font-family: "Roboto", sans-serif;
     font-size: 2rem;
     color:#c997b5;
     text-align: center;
     margin-bottom: 5px;
-    
+    width:550px;
+
 }
 p.id{
     color: #844994;
@@ -21,28 +23,30 @@ span.material-icons {
     
     color:#aa5baa;
     text-align: center;
+    width: 550;
 }
 span.material-icons >p{
     margin-top: 0px;
     margin-bottom: 0px;
+    width: 550;
 
 }
 .list-page {
-    width: 360px;
+    width: 550px;
     padding: 8% 0 0;
     margin: auto;
     position:absolute;
-    top: 50%;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
-
   }
-  .form {
-    position: relative;
+  div.form {
+    
+    position: absolute;
     z-index: 1;
     background: #FFFFFF;
-    max-width: 360px;
-    margin: 0 auto 100px;
+    width: 460px;
+    margin: 0 auto ;
     padding: 45px;
     text-align: center;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
@@ -63,9 +67,9 @@ span.material-icons >p{
     font-family: "Roboto", sans-serif;
     text-transform: uppercase;
     outline: 0;
-    background: rgb(152, 100, 165);
+    background: rgb(96, 57, 119);
    
-    width: 89%;
+    width: 90%;
     border: 0;
     margin: 0 auto;
     padding: 15px;
@@ -145,3 +149,53 @@ span.material-icons >p{
     color: #747575;
   }
   
+
+ div #detail1_map >div{
+   color:black;
+ }
+
+ div#userbar{
+  
+   width:100px;
+   margin:0 auto;
+   padding: 7px 20px;
+   
+   background-color: #c997b5;
+   border-radius: 10px;
+   box-shadow: 1px 1px 1px 1px hsla(280, 50%, 56%, 0.863);
+   margin-bottom: 3px;
+   clear:both;
+   text-align:"middle";
+ }
+
+.create-kakao-link-btn0{
+  width:5px;
+  height:5px;
+  text-align: center;
+
+}
+.locationbtn{
+  text-align: center;
+
+}
+.kakao{
+  width:25px;
+  height:25px;
+
+}
+
+
+div#locationbtn{
+  width:100px;
+  margin-top:3px;
+  text-align: center;
+  margin:0 auto;
+  padding: 7px 20px;
+}
+
+#locationbtn.input{
+  padding: 5px;
+   width: 100%;
+   font-size: 18px;
+}
+
