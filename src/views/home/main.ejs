@@ -20,7 +20,9 @@
       </h1>
       <p id="dynamic" class="lg-text"></p>
     </div>
-    <button type="button" class="mainpage-button button1"  onclick="login();">로그인</button>
+    <% if (is_logined) {%>
+    <button type="button" class="mainpage-button button1"  onclick="location.href='/logout'">로그아웃</button><% } else { %>
+    <button type="button" class="mainpage-button button1"  onclick="location.href='/login'">로그인</button> <% } %>
     <button type="button" class="mainpage-button button2"  onclick=<% if (is_logined) {%> "goIndex();" <% } else { %> "info();" <% } %>>새로운 약속</button>
     <button type="button" class="mainpage-button button3"  onclick=<% if (is_logined) {%> "goList();" <% } else { %> "info();" <% } %>>약속 확인</button>
     

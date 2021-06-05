@@ -4,6 +4,7 @@ const logger = require("../../config/logger");
 const User = require("../../models/User");
 const UserStorage = require("../../models/UserStorage");
 const PlaceStorage = require("../../models/PlaceStorage");
+const HistoryStorage = require("../../models/HistoryStorage");
 
 // 로그인 상태 확인
 function authIsOwner(req, res) {
@@ -28,13 +29,21 @@ const output = {
   },
 
   login: (req, res) => {
-    logger.info(`GET /login 304 "로그인 화면으로 이동"`);
-    res.render("home/login");
+    var is_logined = authIsOwner(req, res);
+    if (is_logined) res.redirect('/');
+    else {
+      logger.info(`GET /login 304 "로그인 화면으로 이동"`);
+      res.render("home/login");
+    }
   },
 
   register: (req, res) => {
-    logger.info(`GET /register 304 "회원가입 화면으로 이동"`);
-    res.render("home/register");
+    var is_logined = authIsOwner(req, res);
+    if (is_logined) res.redirect('/');
+    else {
+      logger.info(`GET /register 304 "회원가입 화면으로 이동"`);
+      res.render("home/register");
+    }
   },
 
   midpoint: async (req, res) => {
@@ -44,17 +53,20 @@ const output = {
     if (userInfo.gender === "M") userGender = "남성";
     else userGender = "여성";
     logger.info(`GET /register 304 "중간 지점 화면으로 이동"`);
-    res.render("home/midpoint", { is_logined: is_logined, name: req.session.name
-      , univ: userInfo.univ, gender: userGender });
+    res.render("home/midpoint", {
+      is_logined: is_logined, name: req.session.name
+      , univ: userInfo.univ, gender: userGender
+    });
   },
 
   list: (req, res) => {
+    var is_logined = authIsOwner(req, res);
     logger.info(`GET /list 304 "약속 리스트 확인 화면으로 이동"`);
-    res.render("home/list");
+    res.render("home/list", { is_logined: is_logined, name: req.session.name });
   },
 
   logout: (req, res) => {
-    req.session.destroy(function(err){
+    req.session.destroy(function (err) {
       res.redirect('/');
     });
   },
@@ -109,16 +121,15 @@ const process = {
     return res.status(url.status).json(response);
   },
 
-  getdb: async (req, res) => {
+  getPlacedb: async (req, res) => {
     const userInfo = await UserStorage.getUserInfo(req.session.name);
-    if (req.body.other) {
-      const recommendData = await PlaceStorage.getRecommendData(req.body.univ, userInfo.gender)
-      res.send(recommendData);
-    }
-    else {
-      const recommendData = await PlaceStorage.getRecommendData(userInfo.univ, userInfo.gender)
-      res.send(recommendData);
-    }
+    const recommendData = await PlaceStorage.getRecommendData(req.body.univ, userInfo.gender)
+    res.send(recommendData);
+  },
+
+  getHistoryDb: async (req, res) => {
+    const data = await HistoryStorage.get(req.session.name);
+    res.send(data);
   },
 };
 
@@ -134,9 +145,7 @@ const log = (response, url) => {
     );
   } else {
     logger.info(
-      `${url.method} ${url.path} ${url.status} Response: ${response.success} ${
-        response.msg || ""
-      }`
+      `${url.method} ${url.path} ${url.status} Response: ${response.success} ${response.msg || ""}`
     );
   }
 };

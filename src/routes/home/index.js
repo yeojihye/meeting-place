@@ -16,6 +16,7 @@ router.get("/index", ctrl.output.index);
 router.post("/login", ctrl.process.login);
 router.post("/register", ctrl.process.register);
 router.post("/midpoint", ctrl.process.confirm);
-router.put("/midpoint", ctrl.process.getdb);
+router.put("/midpoint", ctrl.process.getPlacedb);
+router.put("/list", ctrl.process.getHistoryDb);
 
 module.exports = router;
