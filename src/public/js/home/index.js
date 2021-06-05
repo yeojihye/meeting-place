@@ -47,7 +47,7 @@ function current_position() {
   if (navigator.geolocation) {
 
     // GeoLocation을 이용해서 접속 위치를 얻어옵니다
-    navigator.geolocation.getCurrentPosition(function(position) {
+    navigator.geolocation.getCurrentPosition(function (position) {
 
       var lat = position.coords.latitude, // 위도
         lon = position.coords.longitude; // 경도
@@ -93,7 +93,6 @@ function placesSearchCB(data, status, pagination) {
     // 정상적으로 검색이 완료됐으면
     // 검색 목록과 마커를 표출합니다
     displayPlaces(data);
-
     // 페이지 번호를 표출합니다
     displayPagination(pagination);
 
@@ -164,17 +163,17 @@ function displayPlaces(places) {
 
       marker.normalImage = normalImage;
 
-      (function(marker, title) {
-        kakao.maps.event.addListener(marker, 'mouseover', function() {
+      (function (marker, title) {
+        kakao.maps.event.addListener(marker, 'mouseover', function () {
           displayInfowindow(marker, title);
         });
 
-        kakao.maps.event.addListener(marker, 'mouseout', function() {
+        kakao.maps.event.addListener(marker, 'mouseout', function () {
           infowindow.close();
         });
 
         // 마커에 click 이벤트를 등록합니다
-        kakao.maps.event.addListener(marker, 'click', function() {
+        kakao.maps.event.addListener(marker, 'click', function () {
 
           // 클릭된 마커가 없고, click 마커가 클릭된 마커가 아니면
           // 마커의 이미지를 클릭 이미지로 변경합니다
@@ -191,19 +190,19 @@ function displayPlaces(places) {
           selectedMarker = marker;
         });
 
-        itemEl.onmouseover = function() {
+        itemEl.onmouseover = function () {
           if (!selectedMarker) {
             displayInfowindow(marker, title);
           }
         };
 
-        itemEl.onmouseout = function() {
+        itemEl.onmouseout = function () {
           if (!selectedMarker) {
             infowindow.close();
           }
         };
 
-        itemEl.onclick = function() {
+        itemEl.onclick = function () {
 
           map.setBounds(bounds);
 
@@ -253,8 +252,8 @@ function getListItem(index, places) {
 
   var el = document.createElement('li'),
     itemStr = '<span class="markerbg marker_' + (index + 1) + '"></span>' +
-    '<div class="info">' +
-    '   <h5>' + places.place_name + '</h5>';
+      '<div class="info">' +
+      '   <h5>' + places.place_name + '</h5>';
 
   el.place_name = places.place_name;
   el.x = places.x;
@@ -311,8 +310,8 @@ function displayPagination(pagination) {
     if (i === pagination.current) {
       el.className = 'on';
     } else {
-      el.onclick = (function(i) {
-        return function() {
+      el.onclick = (function (i) {
+        return function () {
           pagination.gotoPage(i);
         }
       })(i);
@@ -356,13 +355,13 @@ function add_user() {
 
     var adduser = document.createElement('div');
 
-    adduser.setAttribute("id", "div_"+user_num);
-    adduser.innerHTML ="<img src='/assets/person.png'>사용자" +  " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
+    adduser.setAttribute("id", "div_" + user_num);
+    adduser.innerHTML = "<img src='/assets/person.png'>사용자" + user_num + " : " + user_place_name[user_num - 1] + " (" + user_road_address[user_num - 1] + ")";
     adduser.style.borderBottom = "1px solid #2e6076";
     //클릭시 사용자 삭제
     adduser.addEventListener("click",
-      function(){
-        var p=this.parentElement;
+      function () {
+        var p = this.parentElement;
         p.removeChild(this);
         storage.removeItem(adduser.id.split("_")[1]);
         user_num--;
@@ -396,9 +395,9 @@ function reset_all() {
 
   //사용자 위치 출력 디브 리셋
   var cell = document.getElementById("userlist");
-  while(cell.hasChildNodes())
-  {
-    cell.removeChild(cell.firstChild);}
+  while (cell.hasChildNodes()) {
+    cell.removeChild(cell.firstChild);
+  }
 
 }
 
