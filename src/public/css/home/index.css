@@ -6,12 +6,12 @@ input[id="sidebaricon"] {display: none;}
 header{width:100%; background: #e5e5e5;}
 header > div {position: relative; width: 1200px;margin:0 auto;}
 header > div ul.nav1 > {font-size: 0;}
-header > div ul.nav1 > li {font-size: 12px;display: inline-block;vertical-align: middle;}
+header > div ul.nav1 > li { font-size: 12px;display: inline-block;vertical-align: middle;}
 header > div ul.nav1 > li >a {display: block;width: auto;padding: 20px;}
 header > div ul.nav1 > li.logo > a{padding: 20px 50px; font-size: 20px;font-weight: 900;}
 
 /*각 영역의 라벨(중앙정렬)*/
-/*.area_desc {position: absolute;top: 50%;left:50%;translate: (-50%,-50%);font-size:20px;}*/
+.area_desc {position: absolute;top: 50%;left:50%;transform:translate(-50%,-50%);font-size:20px;}
 
 /*메뉴버튼*/
 .sidebarbtn{display: block;width: 50px;height: 50px;position: absolute;top: 50%;left: 20px;transform: translateY(-50%);cursor: pointer;}
@@ -23,7 +23,7 @@ header > div ul.nav1 > li.logo > a{padding: 20px 50px; font-size: 20px;font-weig
 /*컨텐츠 영역*/
 .sidebarcontainer {width: 100%;position: relative;}
 .sidebarcontainer .sidecontents {width: 1200px;margin: 0 auto; min-height: 700px;background:#f1f1f1;}
-.sidebarcontainer .sidebar {position: fixed;top:0; right: -300px; width: 200px;height: 100%;background: #666;z-index: 30;transition: .35s;}
+.sidebarcontainer .sidebar {position: fixed;top:0; right: -300px; width: 200px;height: 100%;background: rgba(126, 144, 184, 0.829);z-index: 30;transition: .35s;}
 .sidebarcontainer .sidebar.area_descp{   
   font-size: 1rem;
   color:#F8F8FF;
