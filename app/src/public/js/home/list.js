@@ -69,8 +69,8 @@ async function popUpDetail(listOrder) {
 
     var markerPosition = new kakao.maps.LatLng(db[index].lat, db[index].lng);
     var marker = new kakao.maps.Marker({
-      position: markerPosition
-    }),
+        position: markerPosition
+      }),
       infowindow = new kakao.maps.InfoWindow({
         position: markerPosition,
         content: iwContent,
@@ -182,6 +182,6 @@ function sendLink(addr, title, mapUrl, mobileUrl) {
         mobileWebUrl: mobileUrl,
         webUrl: mapUrl,
       },
-    },],
+    }, ],
   })
 }

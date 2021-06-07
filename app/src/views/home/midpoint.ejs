@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <title>중간지점 추천</title>
-  <link rel="stylesheet" href="/css/home/midpoint.css">
+  <link rel="stylesheet" href="/css/home/index.css">
   <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
   crossorigin="anonymous"></script>
   <script type="text/javascript"
@@ -13,27 +13,55 @@
 </head>
 
 <body onload="search_mid();">
+  
+  <input type="checkbox" id="sidebaricon">
   <header>
-    <a href="/" id="logo"><h1>UNIV_MEETING_PLACE</h1></a>
+    <div>
+      <ul class="nav1">
+        <li class="logo"><a href="/">UNIV MEETING PLACE</a></li>
+        <li><a><img src='/assets/person.png'>&nbsp;<%=name%>님</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+        <li><a onclick="history.back()"style="cursor:pointer;">되돌아가기</a></li>
+        <li><a href="/list">약속 확인</a></li>
+      </ul>
+      
+    </div>
   </header>
-  <%=name%>
-  <% if (is_logined) {%>
-      | <a href="/logout">logout</a>
-  <% } else { %>
-      <script>
-        alert("로그인 후 이용해 주십시오.");
-        location.href="login";
-      </script>
-      <a href="/login">login</a>
-  <% } %>
+
+  <div class="sidebarcontainer">
+    <div clas="sidecontents">
+      <span clss="area_desc">
+      </span>
+    </div>
+    <div class="sidebar">
+      <span class="area_desc">
+        <p><%=name%></p>
+        <p>
+          <% if (is_logined) {%> <a href="/logout">logout</a>
+          <% } else { %>
+            <a href="/login">login</a>
+            <% } %>
+        </p>
+        <p> <a href="/list">약속 확인</a></p>
+      </span>
+    </div>
+  </div>
+
+
   <div class="map_wrap">
-    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;"></div>
-    <div id="menu_wrap" class="bg_white">
-      <div>
-        <a href="javascript:toggle();">주변 지하철역 중심으로 보기</a> |
-        <a href="javascript:wide_view();">전체 출발위치 포함해서 보기</a>
-        <hr>
-        <ul id="subwayList" style="display:none;"></ul>
+    <div id="map"></div>
+
+    <div id="menu_wrap" class="bg_white" style="left:0px;width:300px;height:590px;"> 
+      <div class="dataoption">
+        <div class="databtn1">
+          <ul>
+            <li class="databtn"><a href="javascript:wide_view();" >전체 출발위치 포함해서 보기</a></li>
+            <li class="databtn" ><a href="javascript:toggle();">주변 지하철역 중심으로 보기</a></li>
+            
+            <ul id="subwayList" style="display:none;"></ul>
+            <hr>
+          </ul>
+        </div>
       </div>
       <div class="option">
         <div>
@@ -52,14 +80,11 @@
           <input type="radio" name="category" id="FD" value="FD6" checked>
           <label for="FD">음식점</label>
           <input type="radio" name="category" id="CE" value="CE7">
-          <label for="CE">카페</label>
+          <label for="CE">카페</label><br>
           <input type="radio" name="category" id="SW" value="SW8">
           <label for="SW">지하철역</label>
           <input type="radio" name="category" id="CT" value="CT1">
           <label for="CT">문화시설</label>
-        </div>
-        <div>
-          <button id="goback" onclick="reset();"><img src="/assets/goback.png"></button>
         </div>
       </div>
       <hr>
@@ -75,5 +100,4 @@
     </div>
   </div>
 </body>
-
 </html>

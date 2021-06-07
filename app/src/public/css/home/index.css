@@ -1,5 +1,5 @@
 /*--------------------------------------------------------------
-전체 틀
+전체 틀 
 --------------------------------------------------------------*/
 input[id="sidebaricon"] {display: none;}
 /*헤더*/
@@ -24,7 +24,7 @@ header > div ul.nav1 > li.logo > a{padding: 20px 50px; font-size: 20px;font-weig
 .sidebarcontainer {width: 100%;position: relative;}
 .sidebarcontainer .sidecontents {width: 1200px;margin: 0 auto; min-height: 700px;background:#f1f1f1;}
 .sidebarcontainer .sidebar {position: fixed;top:0; right: -300px; width: 200px;height: 100%;background: rgba(126, 144, 184, 0.829);z-index: 30;transition: .35s;}
-.sidebarcontainer .sidebar.area_descp{
+.sidebarcontainer .sidebar.area_descp{   
   font-size: 1rem;
   color:#F8F8FF;
   padding: 10px 20px 10px 20px;
@@ -51,7 +51,7 @@ input[id="sidebaricon"]:checked ~ .sidebarcontainer .sidebar {right:0;}
   margin:50px;
   display:inline-block;
   border-radius: 10px;
-  transition:all 0.1s;
+  transition:all 0.1s; 
   background-color: #b1c6db;
   border-bottom:5px solid #85a8d1;
 }

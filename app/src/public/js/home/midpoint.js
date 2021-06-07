@@ -524,7 +524,7 @@ function confirm_place(title, address, lat, lng, starting_position) {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          location.href = "/list"; // 장소공유 및 경로안내 페이지로 이동
+          // location.href = "/"; // 장소공유 및 경로안내 페이지로 이동
         } else {
           if (res.err) return alert(res.err);
           alert(res.msg);
