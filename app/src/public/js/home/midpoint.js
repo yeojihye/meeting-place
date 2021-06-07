@@ -297,7 +297,7 @@ function runAjax() {
       sort: "distance"
     },
     headers: {
-      Authorization: "KakaoAK f9808c966119f97aa91b40705cbbfe37"
+      Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5"
     } //REST API 키
   })
     .done(function (msg) {
@@ -524,7 +524,7 @@ function confirm_place(title, address, lat, lng, starting_position) {
       .then((res) => res.json())
       .then((res) => {
         if (res.success) {
-          location.href = "/list"; // 장소공유 및 경로안내 페이지로 이동
+          // location.href = "/"; // 장소공유 및 경로안내 페이지로 이동
         } else {
           if (res.err) return alert(res.err);
           alert(res.msg);
