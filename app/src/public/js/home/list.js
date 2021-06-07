@@ -1,6 +1,7 @@
 var mapCount = 1;
 var geocoder = new kakao.maps.services.Geocoder();
-Kakao.init('e9d8f9201243f52c8d02c32d7b21e488');
+var con_count = 1;
+Kakao.init('020bb9f07f28ca7f066538c8a2938c03');
 
 async function getHistoryDb() {
   const res = await fetch("list", {
@@ -84,6 +85,8 @@ async function popUpDetail(listOrder) {
 
     addr.setAttribute("id", "addr");
     addr.innerHTML = "<br>주소 : " + db[index].addr;
+    // addr.innerHTML += `<a id="create-kakao-link-btn${index}" href="javascript:;">
+    // <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a>`
 
     document.getElementById(detail.id).appendChild(addr);
 
@@ -105,8 +108,9 @@ async function popUpDetail(listOrder) {
     for (var i in starting_lat) {
       var coord = new kakao.maps.LatLng(starting_lat[i], starting_lng[i]);
       var callback = function coord2AddressCallback(result, status) {
+
         if (status === kakao.maps.services.Status.OK) {
-          users.innerHTML += "<br>user" + userCnt + ": ";
+          users.innerHTML += "<br><div id='userbar'>user" + userCnt;
 
           if (result[0].road_address == null) {
             users.innerHTML += result[0].address.address_name;
@@ -117,12 +121,14 @@ async function popUpDetail(listOrder) {
           }
 
           var mapUrl = `https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}`;
-          users.innerHTML += `&nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/>
-          <a id="create-kakao-link-btn${index}" href="javascript:;">
-          <img src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png"/></a><br>`;
-          
-          createLink(db[index], index, mapUrl);
+          var mobileUrl = `https://m.map.kakao.com/actions/publicRoute?startLoc=${user_addr}&sxEnc=MMSNLS&syEnc=QOQRQPS&endLoc=${db[index].addr}&exEnc=MOPLUM&eyEnc=QNOMSNN`;
+
+          users.innerHTML += "<br>" + ` &nbsp; <input type='button' value='경로 안내' onclick="location.href='https://map.kakao.com/?sName=${user_addr}&eName=${db[index].addr}';"/>
+          <a id="kakao-link-btn${con_count}" href='javascript:sendLink("${db[index].addr}", "${db[index].place_name}", "${mapUrl}", "${mobileUrl}")'>
+          <img class='kakao' src="https://developers.kakao.com/assets/img/about/logos/kakaolink/kakaolink_btn_small.png" /align="middle"></a><hr>`;
+          // createLink(db[index], con_count, mapUrl, mobileUrl);
           userCnt++;
+          con_count++;
         }
       }
 
@@ -135,23 +141,47 @@ async function popUpDetail(listOrder) {
 
     document.getElementById(detail.id).appendChild(users);
     document.getElementById(detail.id).appendChild(deleteButton);
+    // createLink(db[index], index);
   }
 }
 
-function createLink(db, i, mapUrl) {
+function createLink(db, i, mapUrl, mobileUrl) {
   Kakao.Link.createDefaultButton({
-    container: `#create-kakao-link-btn${i}`,
+    container: `#kakao-link-btn${i}`,
     objectType: 'location',
     address: db.addr,
     content: {
       title: db.place_name,
       description: db.addr,
-      imageUrl:
-        'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
+      imageUrl: 'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
       link: {
-        mobileWebUrl: mapUrl,
+        mobileWebUrl: mobileUrl,
         webUrl: mapUrl,
       },
     },
+  })
+}
+
+function sendLink(addr, title, mapUrl, mobileUrl) {
+  Kakao.Link.sendDefault({
+    objectType: 'location',
+    address: addr,
+    addressTitle: title,
+    content: {
+      title: title,
+      description: addr,
+      imageUrl: 'http://k.kakaocdn.net/dn/bSbH9w/btqgegaEDfW/vD9KKV0hEintg6bZT4v4WK/kakaolink40_original.png',
+      link: {
+        mobileWebUrl: mobileUrl,
+        webUrl: mapUrl,
+      },
+    },
+    buttons: [{
+      title: '웹으로 보기',
+      link: {
+        mobileWebUrl: mobileUrl,
+        webUrl: mapUrl,
+      },
+    },],
   })
 }

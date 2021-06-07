@@ -217,7 +217,7 @@ function searchPlaces(index) {
       x: mid_point.La,
     },
     headers: {
-      Authorization: "KakaoAK f9808c966119f97aa91b40705cbbfe37"
+      Authorization: "KakaoAK 2dcb41dfc98f544a4a6d8e0f9828cdc5"
     }, //REST API 키
     success: function (result) {
       rec_places.push(result.documents[0]);

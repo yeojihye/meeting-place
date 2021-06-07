@@ -6,12 +6,12 @@ input[id="sidebaricon"] {display: none;}
 header{width:100%; background: #e5e5e5;}
 header > div {position: relative; width: 1200px;margin:0 auto;}
 header > div ul.nav1 > {font-size: 0;}
-header > div ul.nav1 > li {font-size: 12px;display: inline-block;vertical-align: middle;}
+header > div ul.nav1 > li { font-size: 12px;display: inline-block;vertical-align: middle;}
 header > div ul.nav1 > li >a {display: block;width: auto;padding: 20px;}
 header > div ul.nav1 > li.logo > a{padding: 20px 50px; font-size: 20px;font-weight: 900;}
 
 /*각 영역의 라벨(중앙정렬)*/
-/*.area_desc {position: absolute;top: 50%;left:50%;translate: (-50%,-50%);font-size:20px;}*/
+.area_desc {position: absolute;top: 50%;left:50%;transform:translate(-50%,-50%);font-size:20px;}
 
 /*메뉴버튼*/
 .sidebarbtn{display: block;width: 50px;height: 50px;position: absolute;top: 50%;left: 20px;transform: translateY(-50%);cursor: pointer;}
@@ -23,7 +23,7 @@ header > div ul.nav1 > li.logo > a{padding: 20px 50px; font-size: 20px;font-weig
 /*컨텐츠 영역*/
 .sidebarcontainer {width: 100%;position: relative;}
 .sidebarcontainer .sidecontents {width: 1200px;margin: 0 auto; min-height: 700px;background:#f1f1f1;}
-.sidebarcontainer .sidebar {position: fixed;top:0; right: -300px; width: 200px;height: 100%;background: #666;z-index: 30;transition: .35s;}
+.sidebarcontainer .sidebar {position: fixed;top:0; right: -300px; width: 200px;height: 100%;background: rgba(126, 144, 184, 0.829);z-index: 30;transition: .35s;}
 .sidebarcontainer .sidebar.area_descp{
   font-size: 1rem;
   color:#F8F8FF;
@@ -43,33 +43,41 @@ input[id="sidebaricon"]:checked ~ .sidebarcontainer .sidebar {right:0;}
 /*--------------------------------------------------------------
 # Data 옵션 버튼
 --------------------------------------------------------------*/
-.data{
-  width: 100px;
-  height: 100px;
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
+
 .databtn{
-  width:200px;
-  height:100px;
-  background: rgb(235, 220, 241);
-  position: relative;
-  margin-bottom: 25px;
-  text-align: center;
-  border-radius: 50px;
-  transition: all 0 0.1s ease-in-out;
-  font-size: 10px;
-  box-shadow: -6px -6px -5px rgba(228,226,226,0.8), 6px 6px 10px rgba(0,0,0,0.2);
-  color:#222;
-  line-height: 100px;
+  text-decoration: none;
+  font-size:2rem;
+  color:white;
+  margin:50px;
+  display:inline-block;
+  border-radius: 10px;
+  transition:all 0.1s;
+  background-color: #b1c6db;
+  border-bottom:5px solid #85a8d1;
 }
+li.databtn{
+  margin-bottom:5px;
+  padding:10px 20px 10px 20px;
+}
+.databtn a{
+  color:white;
+}
+.databtn1{
+  text-align: center;
+
+}
+.btn:active{
+  transform: translateY(3px);
+  border-bottom:2px solid #165195;
+}
+#menu_wrap .dataoption .databtn {
+  margin-left: 5px;
+}
+
 /*--------------------------------------------------------------
 # map
 --------------------------------------------------------------*/
-a {color:black; text-decoration:none;}
-h1 {background-color:#E6E6FA}
-body {background-color:#E6E6FA}
+a {color:black; text-decoration:none}
 
 #map{
   left:350px;
@@ -77,7 +85,7 @@ body {background-color:#E6E6FA}
   height:120%;
   position:relative;
   overflow:hidden;
-  display:block;
+  display:inline-block;
 }
 
 .map_wrap,
@@ -94,6 +102,15 @@ body {background-color:#E6E6FA}
   color: rgb(0, 0, 0);
   text-decoration: none;
 }
+.bg_white{
+  left:0px;width:320px;height:70%;
+  display:inline-block;
+}
+.bg_white {
+  background: rgb(230, 230, 250);
+}
+
+
 
 .map_wrap {
   position: relative;
@@ -106,36 +123,23 @@ body {background-color:#E6E6FA}
   position: absolute;
   top: 0;
   left: 0;
-  margin: 10px 0 30px 10px;
+  width: 280px;
+  margin: 0 20px 30px 10px;
   padding: 5px;
   overflow-y: auto;
-  background: rgba(100, 221, 227, 0.22);
+  background: rgba(190, 212, 218, 0.7);
   z-index: 1;
   font-size: 12px;
   border-radius: 10px;
 }
 
-#user_list {
-  position: absolute;
-  display:block;
-  margin: 10px 0 30px 10px;
-  padding: 5px;
-  background: rgba(100, 221, 227, 0.22);
-  font-size: 12px;
-  border-radius: 10px;
-  left:0;
-  top:490px;
-}
 
-.bg_white {
-  background: rgb(230, 230, 250);
-}
 
 #menu_wrap hr {
   display: block;
   height: 1px;
   border: 0;
-  border-top: 2px solid #fadcdc;
+  border-top: 1px solid #646161;
   margin: 3px 0;
 }
 
@@ -275,6 +279,22 @@ body {background-color:#E6E6FA}
   font-weight: bold;
   cursor: default;
   color: #777;
+}
+
+#user_list {
+  position: absolute;
+  display:inline-block;
+  margin: 5px;
+  margin-top:0;
+  padding-top:0;
+  padding: 5px;
+  background: rgba(47, 99, 121, 0.55);
+  font-size: 12px;
+  border-radius: 5px;
+  left:3px;
+  top:430px;
+  width:300px;
+  height:150px;
 }
 
 #centerAddr {
