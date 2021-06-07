@@ -1,37 +1,46 @@
-<head>
-  <meta charset="utf-8">
-  <title>UNIV_MEETING_PLACE</title>
-  <link rel="stylesheet" href="/css/home/list.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-  <script type="text/javascript"></script>
-  <script type="text/javascript"
-  src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3c8cb66006a235d48fe9fd48b319d1f7&libraries=services,clusterer,drawing"></script>
-  <script src="https://developers.kakao.com/sdk/js/kakao.js"></script> 
-  <script src="/js/home/list.js"></script>
-</head>
+<!DOCTYPE html>
+<html>
 
-<body onload="load();">
-  <header>
-    <a href="/" id="logo">
-      <h1>UNIV_MEETING_PLACE</h1>
-    </a>
-  </header>
-  <%=name%>
-  <% if (is_logined) {%>
-  | <a href="/logout">logout</a>
-  <% } else { %>
-  <script>
-    alert("로그인 후 이용해 주십시오.");
-    location.href = "login";
-  </script>
-  <a href="/login">login</a>
-  <% } %>
-  <br><br>
-  <div>
-    <%=name%>님의 약속 리스트
-    <ol id="appointment_list">
-    </ol>
-  </div>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>UNIV_MEETING_PLACE</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    rel="stylesheet">
+    <link rel="stylesheet" href="/css/home/list.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script type="text/javascript"></script>
+    <script type="text/javascript"
+    src="//dapi.kakao.com/v2/maps/sdk.js?appkey=3c8cb66006a235d48fe9fd48b319d1f7&libraries=services,clusterer,drawing"></script>
+    <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+    <script src="/js/home/list.js"></script>
+  </head>
+
+  <body onload="load();">
+    <div class="list-page">
+
+      <div id="logo">
+        <span class="material-icons"><p style="font-size:3rem;">travel_explore</p><br>
+        <a href="/" style=" color:#585e64;">UNIV MEETING PLACE</a></div>
+      <div class="form">
+        <div id="listlogo">
+          <p><%=name%>님의 약속 리스트</p>
+        </div>
+        <div class='list-form'>
+          <div id="appointment_list">
+          </div>
+        </div>
+        <p class="id" style="background-color: white;">
+          <% if (is_logined) {%>
+          <a href="/logout">logout</a>
+          <% } else { %>
+          <script>
+            alert("로그인 후 이용해 주십시오.");
+            location.href = "login";
+          </script>
+          <a href="/login">login</a>
+          <% } %>
+        </p>
+
+    </div>
 
 </html>

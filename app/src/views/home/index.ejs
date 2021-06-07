@@ -11,21 +11,43 @@
 </head>
 
 <body onload="current_position();">
+  <input type="checkbox" id="sidebaricon">
   <header>
-    <a href="/" id="logo">
-      <h1>UNIV_MEETING_PLACE</h1>
-    </a>
+    <div>
+      <ul class="nav1">
+        <li class="logo"><a href="/">UNIV MEETING PLACE</a></li>
+        <li><a><img src='/assets/person.png'>&nbsp;<%=name%>님</a></li>
+        <li><a href="/logout">로그아웃</a></li>
+        <li><a href="/list">약속 확인</a></li>
+      </ul>
+
+    </div>
   </header>
-  <div id="test"></div>
-  <%=name%>
-  <% if (is_logined) {%>
-  | <a href="/logout">logout</a>
-  <% } else { %>
-  <a href="/login">login</a>
-  <% } %>
+
+  <div class="sidebarcontainer">
+    <div clas="sidecontents">
+      <span clss="area_desc">
+      </span>
+    </div>
+    <div class="sidebar">
+      <span class="area_desc">
+        <p><img src='/assets/person.png'>&nbsp;<%=name%>님</p>
+        <p>
+          <% if (is_logined) {%> <a href="/logout">logout</a>
+          <% } else { %>
+            <a href="/login">login</a>
+            <% } %>
+        </p>
+        <p> <a href="/list">약속 확인</a></p>
+      </span>
+    </div>
+  </div>
+
+
+
   <div class="map_wrap">
-    <div id="map" style="width:80%;height:150%;position:relative;overflow:hidden;display:inline-block;"></div>
-    <div id="menu_wrap" class="bg_white" style="width:300px;height:470px;">
+    <div id="map" ></div>
+    <div id="menu_wrap" class="bg_white" style="left:0px;width:300px;height:400px;">
       <div class="option">
         <div>
           <form onsubmit="searchPlaces(); return false;">
@@ -49,8 +71,8 @@
       <ul id="placesList"></ul>
       <div id="pagination"></div>
     </div>
-    <div id="user_list" style="height:auto; width:300px; min-height:80px;">
-      <p style="font-family:'고딕체';text-align:center;"> 사용자 위치</p>
+    <div id="user_list">
+      <p style="font-family:'고딕체';text-align:center;"> 사용자 출발 위치</p>
       <ul id="userlist"></ul>
     </div>
   </div>
