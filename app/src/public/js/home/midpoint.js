@@ -217,7 +217,7 @@ function searchPlaces(index) {
       x: mid_point.La,
     },
     headers: {
-      Authorization: "KakaoAK f9808c966119f97aa91b40705cbbfe37"
+      Authorization: "KakaoAK 031eaf5e94aa791f36f2dd85870dbb48"
     }, //REST API 키
     success: function (result) {
       rec_places.push(result.documents[0]);
@@ -297,7 +297,7 @@ function runAjax() {
       sort: "distance"
     },
     headers: {
-      Authorization: "KakaoAK f9808c966119f97aa91b40705cbbfe37"
+      Authorization: "KakaoAK 031eaf5e94aa791f36f2dd85870dbb48"
     } //REST API 키
   })
     .done(function (msg) {
